@@ -4,6 +4,7 @@ import subprocess
 import csv
 import numpy
 import struct
+import sys
 
 def writeData(length, func):
     data = func(length)
@@ -46,7 +47,7 @@ def zipfian(size):
     return numpy.random.zipf(2, size)
 
 
-def shellScript():
+def readShellScript():
     bash_command = "./readTest"
     process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
     output, error = process.communicate()
@@ -71,18 +72,43 @@ def shellScript():
     print(dic)
     return dic
 
-def runner(data_distribution_func, output_file_name):
+def writeShellScript():
+    bash_command = "./writeTest"
+    process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
+    output, error = process.communicate()
+    
+    string_parse = output.decode('utf-8').split('\n')
+    uncompressed_size = int(string_parse[0].split(':')[1])
+    compressed_size = int(string_parse[3].split(':')[1])
+    uncompressed_write = float(string_parse[1].split(':')[1])
+    compressed_write = float(string_parse[4].split(':')[1])
+    compress_time = float(string_parse[2].split(':')[1])
+    total_compression = float(string_parse[5].split(':')[1])
+    ratio = float(string_parse[6].split(':')[1])
+
+    #print(output, error)
+    dic = {"uncompressed_size": uncompressed_size, 
+            "compressed_size": compressed_size, 
+            "uncompressed_write": uncompressed_write, 
+            "compressed_write": compressed_write,
+            "compress_time": compress_time,
+            "total_compression": total_compression,
+            "ratio": ratio}
+    print(dic)
+    return dic
+
+def readRunner(data_distribution_func, output_file_name):
     output = []
     default_size = 25000000
     increment = 12500000
-    target = 500000000
+    target = 25000000 * 20
     counter = 0
 
     while(default_size <= target):
         print("Iteration: ", counter)
         try:
             writeData(default_size, data_distribution_func)
-            output.append(shellScript())
+            output.append(readShellScript())
         except IndexError:
             pass
         counter += 1
@@ -97,14 +123,50 @@ def runner(data_distribution_func, output_file_name):
 
     return None
 
-def main():
-    runner(uniform, 'data/uniform_read.csv')
-    runner(sequential, 'data/sequential_read.csv')
-    runner(normal, 'data/normal_read.csv')
-    runner(random, 'data/random_read.csv')
-    runner(zipfian, 'data/zipfian_read.csv')
+def writeRunner(data_distribution_func, output_file_name):
+    output = []
+    default_size = 25000000
+    increment = 12500000
+    target = 25000000 * 2
+    counter = 0
+
+    while(default_size <= target):
+        print("Iteration: ", counter)
+        try:
+            writeData(default_size, data_distribution_func)
+            output.append(writeShellScript())
+        except IndexError:
+            pass
+        counter += 1
+        default_size += increment
+
+    keys = output[0].keys()
+    
+    with open(output_file_name, 'w', newline='')  as output_file:
+        dict_writer = csv.DictWriter(output_file, keys)
+        dict_writer.writeheader()
+        dict_writer.writerows(output)
 
     return None
 
+def main(argv):
+    if argv == 'read':
+        readRunner(uniform, 'data/uniform_read.csv')
+        readRunner(sequential, 'data/sequential_read.csv')
+        readRunner(normal, 'data/normal_read.csv')
+        readRunner(random, 'data/random_read.csv')
+        readRunner(zipfian, 'data/zipfian_read.csv')
+    else:
+        writeRunner(uniform, 'data/uniform_write.csv')
+        writeRunner(sequential, 'data/sequential_write.csv')
+        writeRunner(normal, 'data/normal_write.csv')
+        writeRunner(random, 'data/random_write.csv')
+        writeRunner(zipfian, 'data/zipfian_write.csv')
+
+    return None
+
+# size = 10000
+# writeData(size, normal)
+
 if __name__ == "__main__":
-    main()
+	 main(sys.argv[1])
