@@ -127,7 +127,7 @@ def writeRunner(data_distribution_func, output_file_name):
     output = []
     default_size = 25000000
     increment = 12500000
-    target = 25000000 * 2
+    target = 25000000 * 20
     counter = 0
 
     while(default_size <= target):
