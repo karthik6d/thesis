@@ -100,7 +100,7 @@ def writeShellScript():
 def readRunner(data_distribution_func, output_file_name):
     output = []
     default_size = 25000000
-    increment = 12500000
+    increment = 125000000
     target = 25000000 * 20
     counter = 0
 
@@ -125,9 +125,9 @@ def readRunner(data_distribution_func, output_file_name):
 
 def writeRunner(data_distribution_func, output_file_name):
     output = []
-    default_size = 25000000
-    increment = 12500000
-    target = 25000000 * 20
+    default_size = 250000
+    increment = 125000
+    target = 250000 * 20
     counter = 0
 
     while(default_size <= target):
@@ -157,11 +157,11 @@ def main(argv):
         readRunner(random, 'data/random_read.csv')
         readRunner(zipfian, 'data/zipfian_read.csv')
     else:
-        writeRunner(uniform, 'data/uniform_write.csv')
-        writeRunner(sequential, 'data/sequential_write.csv')
-        writeRunner(normal, 'data/normal_write.csv')
-        writeRunner(random, 'data/random_write.csv')
-        writeRunner(zipfian, 'data/zipfian_write.csv')
+        writeRunner(uniform, 'data/uniform_write_small.csv')
+        writeRunner(sequential, 'data/sequential_write_small.csv')
+        writeRunner(normal, 'data/normal_write_small.csv')
+        writeRunner(random, 'data/random_write_small.csv')
+        writeRunner(zipfian, 'data/zipfian_write_small.csv')
 
     return None
 
