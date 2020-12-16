@@ -6,13 +6,17 @@ import time
 def runLSMTree(is_compressed, query_path):
     os.chdir('../lsm_tree_compression')
     bash_command = "./server {is_compressed} {query_path}".format(is_compressed=is_compressed, query_path=query_path)
+    #print(bash_command)
 
     process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
     output, error = process.communicate()
 
-    print(output)
+    print(output, error)
     time = float(output.decode('utf-8').split('\n')[2].split(':')[1])
-
+    data_path = '../lsm_tree_compression/enc/'
+    data_size = sum(os.path.getsize(data_path + f) for f in os.listdir(data_path))
+    print(data_size)
+    
     bash_command = "rm -rf data enc"
     process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
     process.communicate()
@@ -33,7 +37,7 @@ def createData(size, numberQueries, dataDistribution):
 
 def compareCompressedToUncompressed(query_path):
     compressed_time = runLSMTree(1, query_path)
-    uncompressed_time = runLSMTree(0, query_path)
+    uncompressed_time = runLSMTree(2, query_path)
 
     return compressed_time > uncompressed_time
 
@@ -57,12 +61,12 @@ def main():
     numEntries = 50
     query_path = "queries.dsl"
     size, numberQueries, dataDistribution = createDataParameters(numEntries)
-    print(size, numberQueries, dataDistribution)
+    #print(size, numberQueries, dataDistribution)
     y = []
     err_count = 0
 
     for i in range(len(size)):
-        print("Entry: ", i)
+        print("Entry: ", i, "Size: ", size[i], numberQueries[i], dataDistribution[i])
         createData(size[i], numberQueries[i], dataDistribution[i])
         try:
             y.append(compareCompressedToUncompressed(query_path))
