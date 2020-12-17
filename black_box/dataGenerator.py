@@ -15,7 +15,6 @@ def runLSMTree(is_compressed, query_path):
     time = float(output.decode('utf-8').split('\n')[2].split(':')[1])
     data_path = '../lsm_tree_compression/enc/'
     data_size = sum(os.path.getsize(data_path + f) for f in os.listdir(data_path))
-    print(data_size)
     
     bash_command = "rm -rf data enc"
     process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)

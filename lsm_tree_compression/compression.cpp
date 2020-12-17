@@ -27,7 +27,7 @@ string snappy_array_encode(char* buffer, size_t data_size) {
     string compressed_data;
     snappy::Compress(buffer, data_size, &compressed_data);
     
-    cout << compressed_data.size() << endl;
+    //cout << compressed_data.size() << endl;
     data_file.write(compressed_data.c_str(), compressed_data.size());
     data_file.close();
 

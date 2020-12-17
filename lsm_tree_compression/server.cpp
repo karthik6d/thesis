@@ -118,7 +118,7 @@ int main(int argc, char** argv) {
     }
   }
 
-  cout << "starting workload";
+  cout << "starting workload" << endl;
   clock_t start;
   double duration;
   start = clock();
