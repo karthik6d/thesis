@@ -67,7 +67,7 @@ void load(string path, DB* db) {
   string line;
 
   while (getline(ss, line)) {
-    cout << "\r" << ++i << "/" << lines << flush;
+    //cout << "\r" << ++i << "/" << lines << flush;
 
     istringstream ss(line);
 
@@ -154,9 +154,7 @@ int main(int argc, char** argv) {
   cout << "Number of arguments: " << argc << endl;
   switch(argc) {
     case 1: {
-      //std::cout << "Here in no compression" << endl;
       options.compression = kNoCompression;
-      //std::cout << "After defining compression";
       break;
     }
 
@@ -187,12 +185,12 @@ int main(int argc, char** argv) {
   // options.compression = kNoCompression;
   // options.bottommost_compression = kNoCompression;
 
-  std::cout << "After declaration" << endl;
+  //std::cout << "After declaration" << endl;
   // open DB
   Status s = DB::Open(options, kDBPath, &db);
   assert(s.ok());
 
-  std::cout << "After declaration" << endl;
+  //std::cout << "After declaration" << endl;
   // Get the workload from the query file from our data generator
   string path = "../lsm_tree_compression/queries.dsl";
   vector<workload_entry> new_workload = get_workload(path, db);
