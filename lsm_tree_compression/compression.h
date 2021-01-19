@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <vector>
 #include "snappy.h"
-
+#include "lsm_tree.h"
+#include "SIMDCompressionAndIntersection/include/codecfactory.h"
+#include "SIMDCompressionAndIntersection/include/intersection.h"
 
 typedef enum Status {
     OK,
@@ -37,6 +40,7 @@ typedef struct FileNode {
 } FileNode;
 
 extern int compressed_file_count;
+extern SIMDCompressionLib::IntegerCODEC &codec;
 
 Status rle_delta_file_encode(const char *filepath, char **new_file);
 // int *rlestreamdecode(const char *filepath, size_t seg_len, size_t *num_res);
@@ -46,3 +50,7 @@ int *rle_delta_f2m_decode(const char *filepath, size_t seg_len, size_t *num_res)
 // Add functionality for Snappy
 std::string snappy_array_encode(char* buffer, size_t data_size);
 const char *snappy_array_decode(std::string filepath);
+
+// SIMD Functionality
+std::string SIMD_encode(std::vector<kv>);
+kv* SIMD_decode(string filepath);
