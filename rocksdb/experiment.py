@@ -6,9 +6,9 @@ import csv
 distributions = {0: "uniformKey", 1: "sequentialKey", 2: "normalKey"}
 compression_schemes = {0: "kNoCompression", 1: "kSnappyCompression", 2: 'kZlibCompression', 3: "kBZip2Compression", 
                         4: "kLZ4Compression", 5: "kLZ4HCCompression", 6: "kXpressCompression", 7: "kZSTD"}
-# NUM_KV_PAIRS = 10000000
-# NUM_QUERIES = 100000
-# NUM_TRIALS = 5
+#NUM_KV_PAIRS = 10000000
+#NUM_QUERIES = 100000
+#NUM_TRIALS = 5
 
 NUM_KV_PAIRS = 1000
 NUM_QUERIES = 10
