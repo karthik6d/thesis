@@ -2,6 +2,7 @@ import os
 import subprocess
 import pandas
 import time
+from datetime import datetime
 
 def runLSMTree(is_compressed, query_path):
     os.chdir('../lsm_tree_compression')
@@ -42,7 +43,7 @@ def compareCompressedToUncompressed(query_path):
     compressed_time = runLSMTree(0, query_path)
     uncompressed_time = runLSMTree(3, query_path)
 
-    return compressed_time > uncompressed_time
+    return compressed_time, uncompressed_time
 
 def createDataParameters(numEntries):
     #TODO: parametrize this and make it more random
@@ -65,6 +66,8 @@ def main():
     query_path = "queries.dsl"
     size, numberQueries, dataDistribution = createDataParameters(numEntries)
     #print(size, numberQueries, dataDistribution)
+    compressed_times = []
+    uncompressed_times = []
     y = []
     err_count = 0
 
@@ -72,15 +75,20 @@ def main():
         print("Entry: ", i, "Size: ", size[i], numberQueries[i], dataDistribution[i])
         createData(size[i], numberQueries[i], dataDistribution[i])
         try:
-            y.append(compareCompressedToUncompressed(query_path))
+            compressed_time, uncompressed_time = compareCompressedToUncompressed(query_path)
+            compressed_times.append(compressed_time)
+            uncompressed_times.append(uncompressed_time)
+            y.append(compressed_time > uncompressed_time)
         except IndexError:
             print("Some Error")
             err_count += 1
 
     print("Number Errors: ", err_count)
-    df = pandas.DataFrame(list(zip(size, numberQueries, dataDistribution, y)), 
-                            columns=['size', 'numberQueries', 'dataDistribution', 'y'])
-    df.to_csv('../data/data1.csv')
+    now = datetime.now()
+    file_name = now.strftime("%d%m%Y%H%M%S")
+    df = pandas.DataFrame(list(zip(size, numberQueries, dataDistribution, compressed_times, uncompressed_times, y)), 
+                            columns=['size', 'numberQueries', 'dataDistribution', 'compressed_time', 'uncompressed_time', 'y'])
+    df.to_csv('../data/' + file_name + '.csv')
 
 if __name__ == '__main__':
     main()

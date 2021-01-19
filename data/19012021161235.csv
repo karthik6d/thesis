@@ -1,0 +1,4 @@
+,size,numberQueries,dataDistribution,compressed_time,uncompressed_time,y
+0,10000,10000,0,0.047984,0.075634,False
+1,10000,10000,1,0.066617,0.047706,True
+2,10000,10000,2,0.060318,0.053573,True
