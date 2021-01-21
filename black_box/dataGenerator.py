@@ -46,10 +46,14 @@ def createData(size, numberQueries, dataDistribution):
     return None
 
 def compareCompressedToUncompressed(query_path):
-    compressed_time, compressed_size = runLSMTree(0, query_path)
-    uncompressed_time, uncompressed_size = runLSMTree(3, query_path)
+    uncompressed_time, uncompressed_size = runLSMTree(0, query_path)
+    snappy_time, snappy_size = runLSMTree(1, query_path)
+    simd_time, simd_size = runLSMTree(2, query_path)
+    rle_time, rle_size = runLSMTree(3, query_path)
 
-    return compressed_time, uncompressed_time, compressed_size, uncompressed_size
+    sizes = {"uncompressed": uncompressed_size, "snappy": snappy_size, "simd": simd_size, "rle": rle_size}
+    times = {"uncompressed": uncompressed_time, "snappy": snappy_time, "simd": simd_time, "rle": rle_time}
+    return sizes, times
 
 def get_size(start_path = '.'):
     total_size = 0
@@ -79,33 +83,37 @@ def createDataParameters(numEntries):
     return size, numberQueries, dataDistribution
 
 def main():
-    numEntries = 1
+    numEntries = 2
     query_path = "queries.dsl"
     size, numberQueries, dataDistribution = createDataParameters(numEntries)
-    #print(size, numberQueries, dataDistribution)
-    compressed_times = []
+    # Output Data
+    snappy_times = []
+    simd_times = []
+    rle_times = []
     uncompressed_times = []
-    compressed_sizes = []
+
+    snappy_sizes = []
+    simd_sizes = []
+    rle_sizes = []
     uncompressed_sizes = []
-    ratio = []
-    y = []
     err_count = 0
 
     for i in range(len(size)):
         print("Entry: ", i, "Size: ", size[i], numberQueries[i], dataDistribution[i])
         createData(size[i], numberQueries[i], dataDistribution[i])
         try:
-            compressed_time, uncompressed_time, compressed_size, uncompressed_size = compareCompressedToUncompressed(query_path)
-            compressed_times.append(compressed_time)
-            uncompressed_times.append(uncompressed_time)
-            compressed_sizes.append(compressed_size)
-            uncompressed_sizes.append(uncompressed_size)
+            sizes, times = compareCompressedToUncompressed(query_path)
+            # Add the times
+            snappy_times.append(times['snappy'])
+            simd_times.append(times['simd'])
+            rle_times.append(times['rle'])
+            uncompressed_times.append(times['uncompressed'])
+            # Add the sizes
+            snappy_sizes.append(sizes['snappy'])
+            simd_sizes.append(sizes['simd'])
+            rle_sizes.append(sizes['rle'])
+            uncompressed_sizes.append(sizes['uncompressed'])
 
-            if uncompressed_size == compressed_size:
-                ratio.append(1.0)
-            else:
-                ratio.append(uncompressed_size / compressed_size)
-            y.append(compressed_time > uncompressed_time)
         except IndexError:
             print("Some Error")
             err_count += 1
@@ -113,10 +121,10 @@ def main():
     print("Number Errors: ", err_count)
     now = datetime.now()
     file_name = now.strftime("%d%m%Y%H%M%S")
-    df = pandas.DataFrame(list(zip(size, numberQueries, dataDistribution, compressed_times, 
-                                    uncompressed_times, compressed_sizes, uncompressed_sizes, ratio, y)), 
-                            columns=['size', 'numberQueries', 'dataDistribution', 
-                                        'compressed_time', 'uncompressed_time', 'compressed_size', 'uncompressed_size', 'ratio', 'y'])
+    df = pandas.DataFrame(list(zip(size, numberQueries, dataDistribution, snappy_times, simd_times,
+                                    rle_times, uncompressed_times, snappy_sizes, simd_sizes, rle_sizes, uncompressed_sizes)), 
+                            columns=['size', 'numberQueries', 'dataDistribution', 'snappy_times', 'simd_times', 'rle_times',
+                                        'uncompressed_times', 'snappy_sizes', 'simd_sizes', 'rle_sizes', 'uncompressed_sizes'])
     df.to_csv('../data/' + file_name + '.csv')
 
 if __name__ == '__main__':

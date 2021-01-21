@@ -79,40 +79,16 @@ subcomponent::subcomponent(vector<kv> kvs) {
   }
 
   // Have to add the compressed as well
-  // creating the data file
-  // this->filename = string("data/C");
-  // this->filename += to_string(component_count++);
-  if (current_db->compressed == 1) {
-    ////cout << "Encoding with RLE" << endl;
-    ofstream data_file("data/tmp", ios::binary);
-
-    // writing the key value pairs to the data file
-    data_file.write((char*)kvs.data(), kvs.size() * sizeof(kv));
-    data_file.close();
-
-    char* output_filename;
-
-    Status status = rle_delta_file_encode("data/tmp", &output_filename);
-
-    (void)status;
-
-    this->filename = string(output_filename);
-
-  } 
-  else if(current_db->compressed == 2){
-    ////cout << "Encoding with snappy" << endl;
-    this->filename = snappy_array_encode((char*)kvs.data(), kvs.size()*sizeof(kv));
+  if(current_db->compressed == 1){
+    this->filename = SNAPPY_encode(kvs);
   }
-  else if(current_db->compressed == 3){
-    // //cout << "data" << endl;
-    // for(kv val : kvs){
-    //   //cout << val.key << ":" << val.value << "\t";
-    // }
-    //cout << endl;
+  else if(current_db->compressed == 2){
     this->filename = SIMD_encode(kvs);
   }
+  else if(current_db->compressed == 3){
+    this->filename = RLE_encode(kvs);
+  }
   else {
-    ////cout << "Normal uncompressed encoding" << endl;
     this->filename = string("data/C");
     this->filename.append(to_string(component_count++));
     this->filename.append(".dat");
@@ -250,8 +226,6 @@ pair<read_result, int> component::read(int key) {
 
     pair<read_result, int> res = sub.read(key);
 
-    //cout << "When does decode even happen??" << endl;
-
     if (res.first == found || res.first == deleted) {
       return res;
     }
@@ -278,39 +252,24 @@ component_iterator component::end() {
 }
 
 vector<kv> subcomponent::get_kvs() {
-  // Remove first four lines of code
-  if (current_db->compressed == 1) {
-    //cout << "before rle decode " << endl;
-    size_t number_read = 0;
-
-    kv* buf = (kv*) rle_delta_stream_decode(this->filename.c_str(), this->num_values * 2, &number_read);
-    //cout << "after rle decode" << endl;
-    //cout << this->num_values << endl;
-    //cout << this->filename << endl;
-    //cout << number_read << endl;
-    // for(int i = 0; i < this->num_values; i++)
-    // {
-    //   //cout << buf[i].key << ":" << buf[i].value << "\t";
-    // }
-
-    return vector<kv>(buf, buf + this->num_values);
-  }
-  else if(current_db->compressed == 2){
-    ifstream f(this->filename, ios::ate | ios::binary);
-
-    const char* decoded_data = snappy_array_decode(this->filename);
-    kv buf[this->num_values];
-    memcpy(buf, decoded_data, this->num_values*sizeof(kv));
+  if(current_db->compressed == 1){
+    kv* buf = SNAPPY_decode(this->filename);
     
     return vector<kv>(buf, buf + this->num_values);
   }
-  else if(current_db ->compressed == 3){
-    ifstream f(this->filename, ios::ate | ios::binary);
 
+  else if(current_db -> compressed == 2){
     kv* buf = SIMD_decode(this->filename);
     
     return vector<kv>(buf, buf + this->num_values);
   }
+
+  else if(current_db -> compressed == 3){
+    kv* buf = RLE_decode(this->filename);
+
+    return vector<kv>(buf, buf + this->num_values);
+  }
+
   else {
     ifstream f(this->filename, ios::ate | ios::binary);
 
@@ -334,8 +293,7 @@ vector<kv> subcomponent::get_kvs() {
 }
 
 pair<read_result, int> subcomponent::read(int key) {
-  //cout << "Reading a key in subcomponent read: " << endl;
-  for (kv k : *this) {
+  for (kv k : this->get_kvs()) {
     if (k.key == key) {
       return pair<read_result, int>(found, k.value);
     }
@@ -349,13 +307,10 @@ pair<read_result, int> subcomponent::read(int key) {
 }
 
 subcomponent_iterator subcomponent::begin() {
-  //cout << "Subcomponent Iterator BEGIN back tracking" << endl;
   return {.pos = 0, .kvs = this->get_kvs()};
 }
 
 subcomponent_iterator subcomponent::end() {
-  //cout << "Ok this is annoying" << endl;
-  vector<kv> tmp = this->get_kvs();
-  //cout << "Subcomponent Iterator END back tracking" << endl;
-  return {.pos = tmp.size(), .kvs = vector<kv>()};
+  //vector<kv> tmp = this->get_kvs();
+  return {.pos = this->num_values, .kvs = vector<kv>()};
 }
