@@ -79,7 +79,7 @@ def createDataParameters(numEntries):
     return size, numberQueries, dataDistribution
 
 def main():
-    numEntries = 1
+    numEntries = 50
     query_path = "queries.dsl"
     size, numberQueries, dataDistribution = createDataParameters(numEntries)
     #print(size, numberQueries, dataDistribution)
