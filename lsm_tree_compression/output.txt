@@ -1,0 +1,1028 @@
+reading csvInside RLE Encode
+First Value: 0
+Diff: 1
+Inside RLE Encode
+First Value: 64
+Diff: 1
+Inside RLE Encode
+First Value: 128
+Diff: 1
+Inside RLE Encode
+First Value: 192
+Diff: 1
+Inside RLE Encode
+First Value: 256
+Diff: 1
+RLE DECODE COMPRESSION FILE
+0:1
+While decoding
+0:1
+RLE DECODE COMPRESSION FILE
+0:1
+While decoding
+0:1
+RLE DECODE COMPRESSION FILE
+0:1
+While decoding
+0:1
+RLE DECODE COMPRESSION FILE
+0:1
+While decoding
+0:1
+RLE DECODE COMPRESSION FILE
+64:65
+While decoding
+64:65
+RLE DECODE COMPRESSION FILE
+64:65
+While decoding
+64:65
+RLE DECODE COMPRESSION FILE
+64:65
+While decoding
+64:65
+RLE DECODE COMPRESSION FILE
+64:65
+While decoding
+64:65
+RLE DECODE COMPRESSION FILE
+128:129
+While decoding
+128:129
+RLE DECODE COMPRESSION FILE
+128:129
+While decoding
+128:129
+RLE DECODE COMPRESSION FILE
+128:129
+While decoding
+128:129
+RLE DECODE COMPRESSION FILE
+128:129
+While decoding
+128:129
+RLE DECODE COMPRESSION FILE
+192:193
+While decoding
+192:193
+RLE DECODE COMPRESSION FILE
+192:193
+While decoding
+192:193
+RLE DECODE COMPRESSION FILE
+192:193
+While decoding
+192:193
+RLE DECODE COMPRESSION FILE
+192:193
+While decoding
+192:193
+Inserting Initial Values: 0:1
+Inserting Initial Values: 64:65
+Inserting Initial Values: 128:129
+Inserting Initial Values: 192:193
+FLUSHING TO DISK
+0:1
+Inside RLE Encode
+First Value: 0
+Diff: 1
+FLUSHING TO DISK
+64:65
+Inside RLE Encode
+First Value: 64
+Diff: 1
+FLUSHING TO DISK
+128:129
+Inside RLE Encode
+First Value: 128
+Diff: 1
+FLUSHING TO DISK
+192:193
+Inside RLE Encode
+First Value: 192
+Diff: 1
+Inside RLE Encode
+First Value: 320
+Diff: 1
+Inside RLE Encode
+First Value: 384
+Diff: 1
+Inside RLE Encode
+First Value: 448
+Diff: 1
+Inside RLE Encode
+First Value: 512
+Diff: 1
+RLE DECODE COMPRESSION FILE
+256:257
+While decoding
+256:257
+RLE DECODE COMPRESSION FILE
+256:257
+While decoding
+256:257
+RLE DECODE COMPRESSION FILE
+256:257
+While decoding
+256:257
+RLE DECODE COMPRESSION FILE
+256:257
+While decoding
+256:257
+RLE DECODE COMPRESSION FILE
+320:321
+While decoding
+320:321
+RLE DECODE COMPRESSION FILE
+320:321
+While decoding
+320:321
+RLE DECODE COMPRESSION FILE
+320:321
+While decoding
+320:321
+RLE DECODE COMPRESSION FILE
+320:321
+While decoding
+320:321
+RLE DECODE COMPRESSION FILE
+384:385
+While decoding
+384:385
+RLE DECODE COMPRESSION FILE
+384:385
+While decoding
+384:385
+RLE DECODE COMPRESSION FILE
+384:385
+While decoding
+384:385
+RLE DECODE COMPRESSION FILE
+384:385
+While decoding
+384:385
+RLE DECODE COMPRESSION FILE
+448:449
+While decoding
+448:449
+RLE DECODE COMPRESSION FILE
+448:449
+While decoding
+448:449
+RLE DECODE COMPRESSION FILE
+448:449
+While decoding
+448:449
+RLE DECODE COMPRESSION FILE
+448:449
+While decoding
+448:449
+Inserting Initial Values: 256:257
+Inserting Initial Values: 320:321
+Inserting Initial Values: 384:385
+Inserting Initial Values: 448:449
+FLUSHING TO DISK
+256:257
+Inside RLE Encode
+First Value: 256
+Diff: 1
+FLUSHING TO DISK
+320:321
+Inside RLE Encode
+First Value: 320
+Diff: 1
+FLUSHING TO DISK
+384:385
+Inside RLE Encode
+First Value: 384
+Diff: 1
+FLUSHING TO DISK
+448:449
+Inside RLE Encode
+First Value: 448
+Diff: 1
+Inside RLE Encode
+First Value: 576
+Diff: 1
+Inside RLE Encode
+First Value: 640
+Diff: 1
+Inside RLE Encode
+First Value: 704
+Diff: 1
+Inside RLE Encode
+First Value: 768
+Diff: 1
+RLE DECODE COMPRESSION FILE
+512:513
+While decoding
+512:513
+RLE DECODE COMPRESSION FILE
+512:513
+While decoding
+512:513
+RLE DECODE COMPRESSION FILE
+512:513
+While decoding
+512:513
+RLE DECODE COMPRESSION FILE
+512:513
+While decoding
+512:513
+RLE DECODE COMPRESSION FILE
+576:577
+While decoding
+576:577
+RLE DECODE COMPRESSION FILE
+576:577
+While decoding
+576:577
+RLE DECODE COMPRESSION FILE
+576:577
+While decoding
+576:577
+RLE DECODE COMPRESSION FILE
+576:577
+While decoding
+576:577
+RLE DECODE COMPRESSION FILE
+640:641
+While decoding
+640:641
+RLE DECODE COMPRESSION FILE
+640:641
+While decoding
+640:641
+RLE DECODE COMPRESSION FILE
+640:641
+While decoding
+640:641
+RLE DECODE COMPRESSION FILE
+640:641
+While decoding
+640:641
+RLE DECODE COMPRESSION FILE
+704:705
+While decoding
+704:705
+RLE DECODE COMPRESSION FILE
+704:705
+While decoding
+704:705
+RLE DECODE COMPRESSION FILE
+704:705
+While decoding
+704:705
+RLE DECODE COMPRESSION FILE
+704:705
+While decoding
+704:705
+Inserting Initial Values: 512:513
+Inserting Initial Values: 576:577
+Inserting Initial Values: 640:641
+Inserting Initial Values: 704:705
+FLUSHING TO DISK
+512:513
+Inside RLE Encode
+First Value: 512
+Diff: 1
+FLUSHING TO DISK
+576:577
+Inside RLE Encode
+First Value: 576
+Diff: 1
+FLUSHING TO DISK
+640:641
+Inside RLE Encode
+First Value: 640
+Diff: 1
+FLUSHING TO DISK
+704:705
+Inside RLE Encode
+First Value: 704
+Diff: 1
+Inside RLE Encode
+First Value: 832
+Diff: 1
+Inside RLE Encode
+First Value: 896
+Diff: 1
+Inside RLE Encode
+First Value: 960
+Diff: 1
+Inside RLE Encode
+First Value: 1024
+Diff: 1
+RLE DECODE COMPRESSION FILE
+768:769
+While decoding
+768:769
+RLE DECODE COMPRESSION FILE
+768:769
+While decoding
+768:769
+RLE DECODE COMPRESSION FILE
+768:769
+While decoding
+768:769
+RLE DECODE COMPRESSION FILE
+768:769
+While decoding
+768:769
+RLE DECODE COMPRESSION FILE
+832:833
+While decoding
+832:833
+RLE DECODE COMPRESSION FILE
+832:833
+While decoding
+832:833
+RLE DECODE COMPRESSION FILE
+832:833
+While decoding
+832:833
+RLE DECODE COMPRESSION FILE
+832:833
+While decoding
+832:833
+RLE DECODE COMPRESSION FILE
+896:897
+While decoding
+896:897
+RLE DECODE COMPRESSION FILE
+896:897
+While decoding
+896:897
+RLE DECODE COMPRESSION FILE
+896:897
+While decoding
+896:897
+RLE DECODE COMPRESSION FILE
+896:897
+While decoding
+896:897
+RLE DECODE COMPRESSION FILE
+960:961
+While decoding
+960:961
+RLE DECODE COMPRESSION FILE
+960:961
+While decoding
+960:961
+RLE DECODE COMPRESSION FILE
+960:961
+While decoding
+960:961
+RLE DECODE COMPRESSION FILE
+960:961
+While decoding
+960:961
+Inserting Initial Values: 768:769
+Inserting Initial Values: 832:833
+Inserting Initial Values: 896:897
+Inserting Initial Values: 960:961
+FLUSHING TO DISK
+768:769
+Inside RLE Encode
+First Value: 768
+Diff: 1
+FLUSHING TO DISK
+832:833
+Inside RLE Encode
+First Value: 832
+Diff: 1
+FLUSHING TO DISK
+896:897
+Inside RLE Encode
+First Value: 896
+Diff: 1
+FLUSHING TO DISK
+960:961
+Inside RLE Encode
+First Value: 960
+Diff: 1
+Inside RLE Encode
+First Value: 1088
+Diff: 1
+Inside RLE Encode
+First Value: 1152
+Diff: 1
+Inside RLE Encode
+First Value: 1216
+Diff: 1
+Inside RLE Encode
+First Value: 1280
+Diff: 1
+RLE DECODE COMPRESSION FILE
+1024:1025
+While decoding
+1024:1025
+RLE DECODE COMPRESSION FILE
+1024:1025
+While decoding
+1024:1025
+RLE DECODE COMPRESSION FILE
+1024:1025
+While decoding
+1024:1025
+RLE DECODE COMPRESSION FILE
+1024:1025
+While decoding
+1024:1025
+RLE DECODE COMPRESSION FILE
+1088:1089
+While decoding
+1088:1089
+RLE DECODE COMPRESSION FILE
+1088:1089
+While decoding
+1088:1089
+RLE DECODE COMPRESSION FILE
+1088:1089
+While decoding
+1088:1089
+RLE DECODE COMPRESSION FILE
+1088:1089
+While decoding
+1088:1089
+RLE DECODE COMPRESSION FILE
+1152:1153
+While decoding
+1152:1153
+RLE DECODE COMPRESSION FILE
+1152:1153
+While decoding
+1152:1153
+RLE DECODE COMPRESSION FILE
+1152:1153
+While decoding
+1152:1153
+RLE DECODE COMPRESSION FILE
+1152:1153
+While decoding
+1152:1153
+RLE DECODE COMPRESSION FILE
+1216:1217
+While decoding
+1216:1217
+RLE DECODE COMPRESSION FILE
+1216:1217
+While decoding
+1216:1217
+RLE DECODE COMPRESSION FILE
+1216:1217
+While decoding
+1216:1217
+RLE DECODE COMPRESSION FILE
+1216:1217
+While decoding
+1216:1217
+Inserting Initial Values: 1024:1025
+Inserting Initial Values: 1088:1089
+Inserting Initial Values: 1152:1153
+Inserting Initial Values: 1216:1217
+FLUSHING TO DISK
+1024:1025
+Inside RLE Encode
+First Value: 1024
+Diff: 1
+FLUSHING TO DISK
+1088:1089
+Inside RLE Encode
+First Value: 1088
+Diff: 1
+FLUSHING TO DISK
+1152:1153
+Inside RLE Encode
+First Value: 1152
+Diff: 1
+FLUSHING TO DISK
+1216:1217
+Inside RLE Encode
+First Value: 1216
+Diff: 1
+RLE DECODE COMPRESSION FILE
+0:1
+While decoding
+0:1
+RLE DECODE COMPRESSION FILE
+0:1
+While decoding
+0:1
+RLE DECODE COMPRESSION FILE
+192:193
+While decoding
+192:193
+RLE DECODE COMPRESSION FILE
+192:193
+While decoding
+192:193
+RLE DECODE COMPRESSION FILE
+256:257
+While decoding
+256:257
+RLE DECODE COMPRESSION FILE
+256:257
+While decoding
+256:257
+RLE DECODE COMPRESSION FILE
+448:449
+While decoding
+448:449
+RLE DECODE COMPRESSION FILE
+448:449
+While decoding
+448:449
+RLE DECODE COMPRESSION FILE
+512:513
+While decoding
+512:513
+RLE DECODE COMPRESSION FILE
+512:513
+While decoding
+512:513
+RLE DECODE COMPRESSION FILE
+704:705
+While decoding
+704:705
+RLE DECODE COMPRESSION FILE
+704:705
+While decoding
+704:705
+RLE DECODE COMPRESSION FILE
+768:769
+While decoding
+768:769
+RLE DECODE COMPRESSION FILE
+768:769
+While decoding
+768:769
+RLE DECODE COMPRESSION FILE
+960:961
+While decoding
+960:961
+RLE DECODE COMPRESSION FILE
+960:961
+While decoding
+960:961
+Inserting Initial Values: 0:1
+Inserting Initial Values: 256:257
+Inserting Initial Values: 512:513
+Inserting Initial Values: 768:769
+RLE DECODE COMPRESSION FILE
+64:65
+While decoding
+64:65
+RLE DECODE COMPRESSION FILE
+64:65
+While decoding
+64:65
+FLUSHING TO DISK
+0:1
+Inside RLE Encode
+First Value: 0
+Diff: 1
+RLE DECODE COMPRESSION FILE
+128:129
+While decoding
+128:129
+RLE DECODE COMPRESSION FILE
+128:129
+While decoding
+128:129
+FLUSHING TO DISK
+64:65
+Inside RLE Encode
+First Value: 64
+Diff: 1
+RLE DECODE COMPRESSION FILE
+192:193
+While decoding
+192:193
+RLE DECODE COMPRESSION FILE
+192:193
+While decoding
+192:193
+FLUSHING TO DISK
+128:129
+Inside RLE Encode
+First Value: 128
+Diff: 1
+FLUSHING TO DISK
+192:193
+Inside RLE Encode
+First Value: 192
+Diff: 1
+RLE DECODE COMPRESSION FILE
+320:321
+While decoding
+320:321
+RLE DECODE COMPRESSION FILE
+320:321
+While decoding
+320:321
+FLUSHING TO DISK
+256:257
+Inside RLE Encode
+First Value: 256
+Diff: 1
+RLE DECODE COMPRESSION FILE
+384:385
+While decoding
+384:385
+RLE DECODE COMPRESSION FILE
+384:385
+While decoding
+384:385
+FLUSHING TO DISK
+320:321
+Inside RLE Encode
+First Value: 320
+Diff: 1
+RLE DECODE COMPRESSION FILE
+448:449
+While decoding
+448:449
+RLE DECODE COMPRESSION FILE
+448:449
+While decoding
+448:449
+FLUSHING TO DISK
+384:385
+Inside RLE Encode
+First Value: 384
+Diff: 1
+FLUSHING TO DISK
+448:449
+Inside RLE Encode
+First Value: 448
+Diff: 1
+RLE DECODE COMPRESSION FILE
+576:577
+While decoding
+576:577
+RLE DECODE COMPRESSION FILE
+576:577
+While decoding
+576:577
+FLUSHING TO DISK
+512:513
+Inside RLE Encode
+First Value: 512
+Diff: 1
+RLE DECODE COMPRESSION FILE
+640:641
+While decoding
+640:641
+RLE DECODE COMPRESSION FILE
+640:641
+While decoding
+640:641
+FLUSHING TO DISK
+576:577
+Inside RLE Encode
+First Value: 576
+Diff: 1
+RLE DECODE COMPRESSION FILE
+704:705
+While decoding
+704:705
+RLE DECODE COMPRESSION FILE
+704:705
+While decoding
+704:705
+FLUSHING TO DISK
+640:641
+Inside RLE Encode
+First Value: 640
+Diff: 1
+FLUSHING TO DISK
+704:705
+Inside RLE Encode
+First Value: 704
+Diff: 1
+RLE DECODE COMPRESSION FILE
+832:833
+While decoding
+832:833
+RLE DECODE COMPRESSION FILE
+832:833
+While decoding
+832:833
+FLUSHING TO DISK
+768:769
+Inside RLE Encode
+First Value: 768
+Diff: 1
+RLE DECODE COMPRESSION FILE
+896:897
+While decoding
+896:897
+RLE DECODE COMPRESSION FILE
+896:897
+While decoding
+896:897
+FLUSHING TO DISK
+832:833
+Inside RLE Encode
+First Value: 832
+Diff: 1
+RLE DECODE COMPRESSION FILE
+960:961
+While decoding
+960:961
+RLE DECODE COMPRESSION FILE
+960:961
+While decoding
+960:961
+FLUSHING TO DISK
+896:897
+Inside RLE Encode
+First Value: 896
+Diff: 1
+FLUSHING TO DISK
+960:961
+Inside RLE Encode
+First Value: 960
+Diff: 1
+Inside RLE Encode
+First Value: 1344
+Diff: 1
+Inside RLE Encode
+First Value: 1408
+Diff: 1
+Inside RLE Encode
+First Value: 1472
+Diff: 1
+Inside RLE Encode
+First Value: 1536
+Diff: 1
+RLE DECODE COMPRESSION FILE
+1280:1281
+While decoding
+1280:1281
+RLE DECODE COMPRESSION FILE
+1280:1281
+While decoding
+1280:1281
+RLE DECODE COMPRESSION FILE
+1280:1281
+While decoding
+1280:1281
+RLE DECODE COMPRESSION FILE
+1280:1281
+While decoding
+1280:1281
+RLE DECODE COMPRESSION FILE
+1344:1345
+While decoding
+1344:1345
+RLE DECODE COMPRESSION FILE
+1344:1345
+While decoding
+1344:1345
+RLE DECODE COMPRESSION FILE
+1344:1345
+While decoding
+1344:1345
+RLE DECODE COMPRESSION FILE
+1344:1345
+While decoding
+1344:1345
+RLE DECODE COMPRESSION FILE
+1408:1409
+While decoding
+1408:1409
+RLE DECODE COMPRESSION FILE
+1408:1409
+While decoding
+1408:1409
+RLE DECODE COMPRESSION FILE
+1408:1409
+While decoding
+1408:1409
+RLE DECODE COMPRESSION FILE
+1408:1409
+While decoding
+1408:1409
+RLE DECODE COMPRESSION FILE
+1472:1473
+While decoding
+1472:1473
+RLE DECODE COMPRESSION FILE
+1472:1473
+While decoding
+1472:1473
+RLE DECODE COMPRESSION FILE
+1472:1473
+While decoding
+1472:1473
+RLE DECODE COMPRESSION FILE
+1472:1473
+While decoding
+1472:1473
+Inserting Initial Values: 1280:1281
+Inserting Initial Values: 1344:1345
+Inserting Initial Values: 1408:1409
+Inserting Initial Values: 1472:1473
+FLUSHING TO DISK
+1280:1281
+Inside RLE Encode
+First Value: 1280
+Diff: 1
+FLUSHING TO DISK
+1344:1345
+Inside RLE Encode
+First Value: 1344
+Diff: 1
+FLUSHING TO DISK
+1408:1409
+Inside RLE Encode
+First Value: 1408
+Diff: 1
+FLUSHING TO DISK
+1472:1473
+Inside RLE Encode
+First Value: 1472
+Diff: 1
+Inside RLE Encode
+First Value: 1600
+Diff: 1
+Inside RLE Encode
+First Value: 1664
+Diff: 1
+Inside RLE Encode
+First Value: 1728
+Diff: 1
+Inside RLE Encode
+First Value: 1792
+Diff: 1
+RLE DECODE COMPRESSION FILE
+1536:1537
+While decoding
+1536:1537
+RLE DECODE COMPRESSION FILE
+1536:1537
+While decoding
+1536:1537
+RLE DECODE COMPRESSION FILE
+1536:1537
+While decoding
+1536:1537
+RLE DECODE COMPRESSION FILE
+1536:1537
+While decoding
+1536:1537
+RLE DECODE COMPRESSION FILE
+1600:1601
+While decoding
+1600:1601
+RLE DECODE COMPRESSION FILE
+1600:1601
+While decoding
+1600:1601
+RLE DECODE COMPRESSION FILE
+1600:1601
+While decoding
+1600:1601
+RLE DECODE COMPRESSION FILE
+1600:1601
+While decoding
+1600:1601
+RLE DECODE COMPRESSION FILE
+1664:1665
+While decoding
+1664:1665
+RLE DECODE COMPRESSION FILE
+1664:1665
+While decoding
+1664:1665
+RLE DECODE COMPRESSION FILE
+1664:1665
+While decoding
+1664:1665
+RLE DECODE COMPRESSION FILE
+1664:1665
+While decoding
+1664:1665
+RLE DECODE COMPRESSION FILE
+1728:1729
+While decoding
+1728:1729
+RLE DECODE COMPRESSION FILE
+1728:1729
+While decoding
+1728:1729
+RLE DECODE COMPRESSION FILE
+1728:1729
+While decoding
+1728:1729
+RLE DECODE COMPRESSION FILE
+1728:1729
+While decoding
+1728:1729
+Inserting Initial Values: 1536:1537
+Inserting Initial Values: 1600:1601
+Inserting Initial Values: 1664:1665
+Inserting Initial Values: 1728:1729
+FLUSHING TO DISK
+1536:1537
+Inside RLE Encode
+First Value: 1536
+Diff: 1
+FLUSHING TO DISK
+1600:1601
+Inside RLE Encode
+First Value: 1600
+Diff: 1
+FLUSHING TO DISK
+1664:1665
+Inside RLE Encode
+First Value: 1664
+Diff: 1
+FLUSHING TO DISK
+1728:1729
+Inside RLE Encode
+First Value: 1728
+Diff: 1
+Inside RLE Encode
+First Value: 1856
+Diff: 1
+Inside RLE Encode
+First Value: 1920
+Diff: 1
+
+starting workload
+enc/74.dat
+1920:1982
+320 fails to even check 
+enc/73.dat
+1856:1918
+320 fails to even check 
+enc/68.dat
+1792:1854
+320 fails to even check 
+enc/69.dat
+1536:1598
+320 fails to even check 
+enc/70.dat
+1600:1662
+320 fails to even check 
+enc/71.dat
+1664:1726
+320 fails to even check 
+enc/72.dat
+1728:1790
+320 fails to even check 
+enc/61.dat
+1280:1342
+320 fails to even check 
+enc/62.dat
+1344:1406
+320 fails to even check 
+enc/63.dat
+1408:1470
+320 fails to even check 
+enc/64.dat
+1472:1534
+320 fails to even check 
+enc/37.dat
+1024:1086
+320 fails to even check 
+enc/38.dat
+1088:1150
+320 fails to even check 
+enc/39.dat
+1152:1214
+320 fails to even check 
+enc/40.dat
+1216:1278
+320 fails to even check 
+enc/41.dat
+0:62
+320 fails to even check 
+enc/42.dat
+64:126
+320 fails to even check 
+enc/43.dat
+128:190
+320 fails to even check 
+enc/44.dat
+192:254
+320 fails to even check 
+enc/45.dat
+256:318
+320 fails to even check 
+Gonna read from the subcomponent
+enc/46.dat
+RLE DECODE COMPRESSION FILE
+320:321
+While decoding
+320:321
+RLE DECODE COMPRESSION FILE
+320:321
+While decoding
+320:321
+
+Execution Time of Reads and Writes: 0.000736
+finished workload, writing results to file

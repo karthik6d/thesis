@@ -1,0 +1,95 @@
+reading csv
+starting workload
+enc/73.dat
+1920:1982
+320 fails to even check 
+enc/72.dat
+1856:1918
+320 fails to even check 
+enc/67.dat
+1792:1854
+320 fails to even check 
+enc/68.dat
+0:683735106
+320 fails to even check 
+enc/69.dat
+1592:1660
+320 fails to even check 
+enc/70.dat
+1662:1736
+320 fails to even check 
+enc/71.dat
+1738:1790
+320 fails to even check 
+enc/60.dat
+0:683735106
+320 fails to even check 
+enc/61.dat
+1338:1406
+320 fails to even check 
+enc/62.dat
+1414:1482
+320 fails to even check 
+enc/63.dat
+1484:1534
+320 fails to even check 
+enc/37.dat
+0:683928069
+320 fails to even check 
+enc/38.dat
+1082:1150
+320 fails to even check 
+enc/39.dat
+1158:1226
+320 fails to even check 
+enc/40.dat
+1228:1278
+320 fails to even check 
+enc/41.dat
+0:681574384
+320 fails to even check 
+enc/42.dat
+0:122
+320 fails to even check 
+enc/43.dat
+0:198
+320 fails to even check 
+enc/44.dat
+0:270
+320 fails to even check 
+enc/45.dat
+0:683926200
+320 fails to even check 
+enc/46.dat
+0:412
+320 fails to even check 
+enc/47.dat
+0:484
+320 fails to even check 
+enc/48.dat
+486:554
+320 fails to even check 
+enc/49.dat
+0:626
+320 fails to even check 
+enc/50.dat
+0:698
+320 fails to even check 
+enc/51.dat
+0:776
+320 fails to even check 
+enc/52.dat
+0:683734161
+320 fails to even check 
+enc/53.dat
+0:683734161
+320 fails to even check 
+enc/54.dat
+0:988
+320 fails to even check 
+enc/55.dat
+990:1022
+320 fails to even check 
+
+Execution Time of Reads and Writes: 0.000719
+finished workload, writing results to file
