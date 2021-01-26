@@ -53,11 +53,16 @@ void load(string path) {
 
   int lines = count(data_str.begin(), data_str.end(), '\n');
 
-  cout << "reading csv";
+  cout << "reading csv" << endl;
 
   istringstream ss(data_str);
 
   string line;
+
+  clock_t start;
+  double duration;
+  start = clock();
+
 
   while (getline(ss, line)) {
     // cout << "\r" << ++i << "/" << lines << flush;
@@ -71,7 +76,8 @@ void load(string path) {
 
     current_db->write(stoi(key_s), stoi(value_s));
   }
-
+  duration = (clock() - start) / (double) CLOCKS_PER_SEC;
+  cout << "Execution Time of Load: " << duration << endl;
   cout << endl;
 }
 
@@ -84,6 +90,9 @@ int main(int argc, char** argv) {
   string output_str;
   int is_compressed = atoi(argv[1]);
   ifstream query_file(argv[2]);
+
+  clock_t start;
+  double duration;
 
   // Parse through workload file
   while (getline(query_file, output_str)) {
@@ -100,7 +109,6 @@ int main(int argc, char** argv) {
       create(elements.at(1), is_compressed);
     } else if (elements[0].compare("load") == 0) {
       load(elements.at(1));
-
     } else if (elements[0].compare("read") == 0) {
       workload.push_back({read_query, stoi(elements[1]), 0});
 
@@ -119,10 +127,8 @@ int main(int argc, char** argv) {
   }
 
   cout << "starting workload" << endl;
-  clock_t start;
-  double duration;
   start = clock();
-
+  
   auto result = execute_workload();
 
   duration = (clock() - start) / (double) CLOCKS_PER_SEC;
