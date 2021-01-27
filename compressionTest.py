@@ -98,10 +98,11 @@ def writeShellScript():
     return dic
 
 def readRunner(data_distribution_func, output_file_name):
+    MAX_BUFFER_SIZE = 4096 * 64
     output = []
-    default_size = 25000000
+    default_size = 4096
     increment = 125000000
-    target = 25000000 * 20
+    target = MAX_BUFFER_SIZE
     counter = 0
 
     while(default_size <= target):
@@ -112,7 +113,8 @@ def readRunner(data_distribution_func, output_file_name):
         except IndexError:
             pass
         counter += 1
-        default_size += increment
+        #default_size += increment
+        default_size *= 2
 
     keys = output[0].keys()
     
@@ -151,11 +153,11 @@ def writeRunner(data_distribution_func, output_file_name):
 
 def main(argv):
     if argv == 'read':
-        readRunner(uniform, 'data/uniform_read.csv')
-        readRunner(sequential, 'data/sequential_read.csv')
-        readRunner(normal, 'data/normal_read.csv')
-        readRunner(random, 'data/random_read.csv')
-        readRunner(zipfian, 'data/zipfian_read.csv')
+        readRunner(uniform, 'data/uniform_read_1.csv')
+        readRunner(sequential, 'data/sequential_read_1.csv')
+        readRunner(normal, 'data/normal_read_1.csv')
+        readRunner(random, 'data/random_read_1.csv')
+        readRunner(zipfian, 'data/zipfian_read_1.csv')
     else:
         writeRunner(uniform, 'data/uniform_write_small.csv')
         writeRunner(sequential, 'data/sequential_write_small.csv')

@@ -153,7 +153,7 @@ string SNAPPY_encode(vector<kv> kvs) {
 
     string compressed_data;
     snappy::Compress((char*) kvs.data(), kvs.size()*sizeof(kv), &compressed_data);
-
+    cout << "Uncompressed Size: " << kvs.size()*sizeof(kv) << " Compressed Size: " << compressed_data.size() << endl; 
     data_file.write(compressed_data.c_str(), compressed_data.size());
     data_file.close();
 
