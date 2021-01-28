@@ -38,9 +38,9 @@ def runLSMTree(is_compressed, query_path):
 
     return load_time, read_time, data_size
 
-def createData(size, numberQueries, dataDistribution):
+def createData(size, numberQueries, dataDistribution, readPercentage=100):
     os.chdir('../lsm_tree_compression')
-    bash_command = """./gen -N {size} -queries {numberQueries} -keyDistribution {dataDistribution} -valueDistribution 1 -readPercentage 100""".format(size=size, numberQueries=numberQueries, dataDistribution=dataDistribution)
+    bash_command = """./gen -N {size} -queries {numberQueries} -keyDistribution {dataDistribution} -readPercentage {readPercentage}""".format(size=size, numberQueries=numberQueries, dataDistribution=dataDistribution, readPercentage=readPercentage)
     process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
     process.communicate()
 
@@ -70,9 +70,10 @@ def get_size(start_path = '.'):
 
 def createDataParameters(numEntries):
     #TODO: parametrize this and make it more random
-    size = [10000, 10000, 10000]
-    numberQueries = [10000, 10000, 10000]
-    dataDistribution = [0,1,2]
+    size = [10000, 10000, 10000, 10000, 10000, 1000]
+    numberQueries = [10000, 10000, 10000, 10000, 10000, 10000]
+    dataDistribution = [0,1,2,0,1,2]
+    readPercentage = [100, 100, 100, 50, 50, 50]
     currSize = 10000
 
     for i in range(1, numEntries):
@@ -81,13 +82,19 @@ def createDataParameters(numEntries):
             size.append(currSize)
             numberQueries.append(10000)
             dataDistribution.append(j)
+            readPercentage.append(100)
+            size.append(currSize)
+            numberQueries.append(10000)
+            dataDistribution.append(j)
+            readPercentage.append(50)
 
-    return size, numberQueries, dataDistribution
+
+    return size, numberQueries, dataDistribution, readPercentage
 
 def main():
-    numEntries = 50
+    numEntries = 1
     query_path = "queries.dsl"
-    size, numberQueries, dataDistribution = createDataParameters(numEntries)
+    size, numberQueries, dataDistribution, readPercentage = createDataParameters(numEntries)
     # Output Data
     snappy_read_times = []
     simd_read_times = []
@@ -106,8 +113,8 @@ def main():
     err_count = 0
 
     for i in range(len(size)):
-        print("Entry: ", i, "Size: ", size[i], numberQueries[i], dataDistribution[i])
-        createData(size[i], numberQueries[i], dataDistribution[i])
+        print("Entry: ", i, "Size: ", size[i], numberQueries[i], dataDistribution[i], readPercentage[i])
+        createData(size[i], numberQueries[i], dataDistribution[i], readPercentage[i])
         try:
             sizes, read_times, load_times = compareCompressedToUncompressed(query_path)
             # Add the read times
@@ -136,11 +143,11 @@ def main():
     df = pandas.DataFrame(list(zip(size, numberQueries, dataDistribution, snappy_read_times, simd_read_times,
                                     rle_read_times, uncompressed_read_times, 
                                     snappy_load_times, simd_load_times, rle_load_times, uncompressed_load_times,
-                                    snappy_sizes, simd_sizes, rle_sizes, uncompressed_sizes)), 
+                                    snappy_sizes, simd_sizes, rle_sizes, uncompressed_sizes, readPercentage)), 
                             columns=['size', 'numberQueries', 'dataDistribution', 'snappy_read_times', 'simd_read_times', 'rle_read_times',
                                         'uncompressed_read_times', 'snappy_load_times', 'simd_load_times', 'rle_load_times',
                                         'uncompressed_load_times',
-                                        'snappy_sizes', 'simd_sizes', 'rle_sizes', 'uncompressed_sizes'])
+                                        'snappy_sizes', 'simd_sizes', 'rle_sizes', 'uncompressed_sizes', 'readPercentage'])
     df.to_csv('../data/' + file_name + '.csv')
 
 if __name__ == '__main__':

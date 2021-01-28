@@ -141,6 +141,7 @@ kv* SIMD_decode(string filepath) {
     size_t recoveredsize = DEFAULT_BUFFER_SIZE * 2;
     
     codec.decodeArray((uint32_t*) buf, length/sizeof(uint32_t), mydataback, recoveredsize);
+    //cout << "Recovered Size: " << endl;
     
     free(buf);
     return (kv*) mydataback;
@@ -153,7 +154,7 @@ string SNAPPY_encode(vector<kv> kvs) {
 
     string compressed_data;
     snappy::Compress((char*) kvs.data(), kvs.size()*sizeof(kv), &compressed_data);
-    cout << "Uncompressed Size: " << kvs.size()*sizeof(kv) << " Compressed Size: " << compressed_data.size() << endl; 
+    //cout << "Uncompressed Size: " << kvs.size()*sizeof(kv) << " Compressed Size: " << compressed_data.size() << endl; 
     data_file.write(compressed_data.c_str(), compressed_data.size());
     data_file.close();
 

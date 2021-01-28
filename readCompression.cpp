@@ -51,6 +51,27 @@ vector breakUncompressedFile(FILE* f, size_t length, int block_size) {
     return paths;
 }
 
+int compare_kvs(kv a, kv b) {
+  int a_val = a.key < 0 ? -a.key : a.key;
+  int b_val = b.key < 0 ? -b.key : b.key;
+  return a_val < b_val;
+}
+
+// Reads blocks of data from disk to memory of size block size
+vector<kv> loadUncompressedBlock(FILE* f, size_t block_size) {
+    char* data = (char*)malloc(block_size);
+    fread (data, sizeof(char), block_size, f);
+    kv* kv_data = (kv*) data;
+    vector<kv> vector_data;
+
+    for(int i = 0; i < block_size/sizeof(kv); i++){
+        vector_data.push_back(kv_data[i]);
+    }
+
+    std::sort(vector_data.begin(), vector_data.end(), compare_kvs);
+    return vector_data;
+}
+
 
 // Takes a uncompressed file and compresses it using the snappy compression scheme
 void compressFile(FILE* f, string new_path, size_t length, size_t block_size) {
