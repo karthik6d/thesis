@@ -1,0 +1,67 @@
+reading csv
+starting workload
+data/C74.dat
+1920:1982
+320 fails to even check 
+data/C73.dat
+1856:1918
+320 fails to even check 
+data/C68.dat
+1792:1854
+320 fails to even check 
+data/C69.dat
+1536:1598
+320 fails to even check 
+data/C70.dat
+1600:1662
+320 fails to even check 
+data/C71.dat
+1664:1726
+320 fails to even check 
+data/C72.dat
+1728:1790
+320 fails to even check 
+data/C61.dat
+1280:1342
+320 fails to even check 
+data/C62.dat
+1344:1406
+320 fails to even check 
+data/C63.dat
+1408:1470
+320 fails to even check 
+data/C64.dat
+1472:1534
+320 fails to even check 
+data/C37.dat
+1024:1086
+320 fails to even check 
+data/C38.dat
+1088:1150
+320 fails to even check 
+data/C39.dat
+1152:1214
+320 fails to even check 
+data/C40.dat
+1216:1278
+320 fails to even check 
+data/C41.dat
+0:62
+320 fails to even check 
+data/C42.dat
+64:126
+320 fails to even check 
+data/C43.dat
+128:190
+320 fails to even check 
+data/C44.dat
+192:254
+320 fails to even check 
+data/C45.dat
+256:318
+320 fails to even check 
+Gonna read from the subcomponent
+data/C46.dat
+
+Execution Time of Reads and Writes: 0.000653
+finished workload, writing results to file

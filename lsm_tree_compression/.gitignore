@@ -1,0 +1,64 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# random binaries and files
+data
+queries
+workload-generator
+*.csv
+*.exp
+*.dsl
+gen
+quicksort
+server
+minheap
+*.dat
+*.res
+
+# keep the tests folder
+!tests/*
+
+# ignore vscode folder
+.vscode
+.idea
+
+.DS_Store
+
+perf.data*
+enc
+
+test_component_iterator*
+test_minheap*
+
+test_compression*
+tmp.cpp
