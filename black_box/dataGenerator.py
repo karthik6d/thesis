@@ -1,8 +1,8 @@
 import os
 import subprocess
-import pandas
 import time
 from datetime import datetime
+import csv
 
 def runLSMTree(is_compressed, query_path):
     os.chdir('../lsm_tree_compression')
@@ -139,16 +139,22 @@ def main():
 
     print("Number Errors: ", err_count)
     now = datetime.now()
-    file_name = now.strftime("%d%m%Y%H%M%S")
-    df = pandas.DataFrame(list(zip(size, numberQueries, dataDistribution, snappy_read_times, simd_read_times,
-                                    rle_read_times, uncompressed_read_times, 
-                                    snappy_load_times, simd_load_times, rle_load_times, uncompressed_load_times,
-                                    snappy_sizes, simd_sizes, rle_sizes, uncompressed_sizes, readPercentage)), 
-                            columns=['size', 'numberQueries', 'dataDistribution', 'snappy_read_times', 'simd_read_times', 'rle_read_times',
+    file_name = '../data/' + now.strftime("%d%m%Y%H%M%S") + '.csv'
+    columns = ['size', 'numberQueries', 'dataDistribution', 'snappy_read_times', 'simd_read_times', 'rle_read_times',
                                         'uncompressed_read_times', 'snappy_load_times', 'simd_load_times', 'rle_load_times',
                                         'uncompressed_load_times',
-                                        'snappy_sizes', 'simd_sizes', 'rle_sizes', 'uncompressed_sizes', 'readPercentage'])
-    df.to_csv('../data/' + file_name + '.csv')
+                                        'snappy_sizes', 'simd_sizes', 'rle_sizes', 'uncompressed_sizes', 'readPercentage']
+    data = list(zip(size, numberQueries, dataDistribution, snappy_read_times, simd_read_times,
+                                    rle_read_times, uncompressed_read_times, 
+                                    snappy_load_times, simd_load_times, rle_load_times, uncompressed_load_times,
+                                    snappy_sizes, simd_sizes, rle_sizes, uncompressed_sizes, readPercentage))
+
+    with open(file_name, 'a') as outcsv: 
+        writer = csv.writer(outcsv, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL, lineterminator='\n')
+        writer.writerow(columns)
+        for item in data:
+            #Write item to outcsv
+            writer.writerow([item[0], item[1], item[2]])
 
 if __name__ == '__main__':
     main()
