@@ -92,7 +92,7 @@ def createDataParameters(numEntries):
     return size, numberQueries, dataDistribution, readPercentage
 
 def main():
-    numEntries = 50
+    numEntries = 1
     query_path = "queries.dsl"
     size, numberQueries, dataDistribution, readPercentage = createDataParameters(numEntries)
     # Output Data
@@ -154,7 +154,7 @@ def main():
         writer.writerow(columns)
         for item in data:
             #Write item to outcsv
-            writer.writerow([item[0], item[1], item[2]])
+            writer.writerow(item)
 
 if __name__ == '__main__':
     main()
