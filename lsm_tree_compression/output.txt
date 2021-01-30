@@ -1,0 +1,9 @@
+reading csv
+Uncompressed Size: 32768 Compressed Size: 32774
+Uncompressed Size: 32768 Compressed Size: 32774
+Execution Time of Load: 0.010511
+
+starting workload
+
+Execution Time of Reads and Writes: 0.84417
+finished workload, writing results to file

@@ -51,10 +51,23 @@ subcomponent::subcomponent(vector<kv> kvs) {
   this->min_value = INT32_MAX;
   this->max_value = INT32_MIN;
 
+  // Create the bloom filter
+  bloom_parameters parameters;
+  // How many elements roughly do we expect to insert?
+  parameters.projected_element_count = DEFAULT_BUFFER_SIZE;
+  // Maximum tolerable false positive probability? (0,1)
+  parameters.false_positive_probability = 0.01; // 1 in 100
+  // Compute the optimal parameters
+  parameters.compute_optimal_parameters();
+  bloom_filter filter(parameters);
+  
+  this->filter = filter;
+
   this->num_values = kvs.size();
 
   for (auto pair : kvs) {
     int val = pair.key < 0 ? -pair.key : pair.key;
+    this->filter.insert(pair.key);
 
     if (val < min_value) {
       this->min_value = val;
@@ -66,32 +79,16 @@ subcomponent::subcomponent(vector<kv> kvs) {
   }
 
   // Have to add the compressed as well
-  // creating the data file
-  // this->filename = string("data/C");
-  // this->filename += to_string(component_count++);
-  if (current_db->compressed == 1) {
-    //cout << "Encoding with RLE" << endl;
-    ofstream data_file("data/tmp", ios::binary);
-
-    // writing the key value pairs to the data file
-    data_file.write((char*)kvs.data(), kvs.size() * sizeof(kv));
-    data_file.close();
-
-    char* output_filename;
-
-    Status status = rle_delta_file_encode("data/tmp", &output_filename);
-
-    (void)status;
-
-    this->filename = string(output_filename);
-
-  } 
+  if(current_db->compressed == 1){
+    this->filename = SNAPPY_encode(kvs);
+  }
   else if(current_db->compressed == 2){
-    //cout << "Encoding with snappy" << endl;
-    this->filename = snappy_array_encode((char*)kvs.data(), kvs.size()*sizeof(kv));
+    this->filename = SIMD_encode(kvs);
+  }
+  else if(current_db->compressed == 3){
+    this->filename = RLE_encode(kvs);
   }
   else {
-    //cout << "Normal uncompressed encoding" << endl;
     this->filename = string("data/C");
     this->filename.append(to_string(component_count++));
     this->filename.append(".dat");
@@ -171,6 +168,7 @@ pair<read_result, int> LSM_Tree::read(int key) {
   for (level l : this->levels) {
     pair<read_result, int> res = l.read(key);
 
+    //cout << "Trying to figure out ordering" << endl;
     if (res.first == found || res.first == deleted) {
       return res;
     }
@@ -201,6 +199,7 @@ pair<read_result, int> level::read(int key) {
 
     pair<read_result, int> res = c.read(key);
 
+    //cout << "Level::Read again trying to figure out ordering" << endl;
     if (res.first == found || res.first == deleted) {
       return res;
     }
@@ -213,7 +212,6 @@ vector<kv> component::get_kvs() {
   vector<kv> res;
   for (auto sub : this->subcomponents) {
     vector<kv> s = sub.get_kvs();
-
     res.insert(res.end(), s.begin(), s.end());
   }
 
@@ -222,7 +220,7 @@ vector<kv> component::get_kvs() {
 
 pair<read_result, int> component::read(int key) {
   for (auto sub : this->subcomponents) {
-    if (key < sub.min_value || key > sub.max_value) {
+    if (key < sub.min_value || key > sub.max_value || !sub.filter.contains(key)) {
       continue;
     }
 
@@ -238,6 +236,7 @@ pair<read_result, int> component::read(int key) {
 
 component_iterator component::begin() {
   assert(this->subcomponents.size() > 0);
+  //cout << "OK i guess here" << endl;
   return {.pos = 0,
           .it = this->subcomponents[0].begin(),
           .end = this->subcomponents[0].end(),
@@ -253,24 +252,24 @@ component_iterator component::end() {
 }
 
 vector<kv> subcomponent::get_kvs() {
-  // Remove first four lines of code
-  if (current_db->compressed == 1) {
-    //cout << "COMPRESSED" << endl;
-    size_t number_read = 0;
-
-    kv* buf = (kv*) rle_delta_stream_decode(this->filename.c_str(), this->num_values * 2, &number_read);
-
-    return vector<kv>(buf, buf + this->num_values);
-  }
-  else if(current_db->compressed == 2){
-    ifstream f(this->filename, ios::ate | ios::binary);
-
-    const char* decoded_data = snappy_array_decode(this->filename);
-    kv buf[this->num_values];
-    memcpy(buf, decoded_data, this->num_values*sizeof(kv));
+  if(current_db->compressed == 1){
+    kv* buf = SNAPPY_decode(this->filename);
     
     return vector<kv>(buf, buf + this->num_values);
   }
+
+  else if(current_db -> compressed == 2){
+    kv* buf = SIMD_decode(this->filename);
+    
+    return vector<kv>(buf, buf + this->num_values);
+  }
+
+  else if(current_db -> compressed == 3){
+    kv* buf = RLE_decode(this->filename);
+
+    return vector<kv>(buf, buf + this->num_values);
+  }
+
   else {
     ifstream f(this->filename, ios::ate | ios::binary);
 
@@ -294,7 +293,7 @@ vector<kv> subcomponent::get_kvs() {
 }
 
 pair<read_result, int> subcomponent::read(int key) {
-  for (auto k : *this) {
+  for (kv k : this->get_kvs()) {
     if (k.key == key) {
       return pair<read_result, int>(found, k.value);
     }
@@ -312,6 +311,6 @@ subcomponent_iterator subcomponent::begin() {
 }
 
 subcomponent_iterator subcomponent::end() {
-  vector<kv> tmp = this->get_kvs();
-  return {.pos = tmp.size(), .kvs = vector<kv>()};
+  //vector<kv> tmp = this->get_kvs();
+  return {.pos = this->num_values, .kvs = vector<kv>()};
 }

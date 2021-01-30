@@ -1,0 +1,4 @@
+,size,numberQueries,dataDistribution,snappy_read_times,simd_read_times,rle_read_times,uncompressed_read_times,snappy_load_times,simd_load_times,rle_load_times,uncompressed_load_times,snappy_sizes,simd_sizes,rle_sizes,uncompressed_sizes
+0,10000,10000,0,0.048122,0.03984,0.041161,0.04542,0.006792,0.006908,0.00642,0.006172,0,0,0,0
+1,10000,10000,1,0.042299,0.047213,0.05294,0.042633,0.003175,0.005339,0.006378,0.005381,0,0,0,0
+2,10000,10000,2,0.041935,0.048009,0.045415,0.043755,0.005712,0.006433,0.005408,0.005653,0,0,0,0

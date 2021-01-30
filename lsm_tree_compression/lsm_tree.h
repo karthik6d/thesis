@@ -9,12 +9,13 @@
 #include <string>
 #include <tuple>
 #include <vector>
+#include "bloom_filter.hpp"
 
 // Defines number of key values pairs in Main Memory
-#define DEFAULT_BUFFER_SIZE 8192
+#define DEFAULT_BUFFER_SIZE 131072
 
 // Defines the number of components per level before merging
-#define COMPONENTS_PER_LEVEL 10
+#define COMPONENTS_PER_LEVEL 4
 
 using namespace std;
 
@@ -53,6 +54,7 @@ typedef struct subcomponent {
   string filename;
   int min_value;
   int max_value;
+  bloom_filter filter;
   unsigned int num_values;
 
   subcomponent(vector<kv> kvs);
