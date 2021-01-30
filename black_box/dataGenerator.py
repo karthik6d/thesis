@@ -154,7 +154,7 @@ def main():
         writer.writerow(columns)
         for item in data:
             #Write item to outcsv
-            writer.writerow([item[0], item[1], item[2]])
+            writer.writerow(item)
 
 if __name__ == '__main__':
     main()
