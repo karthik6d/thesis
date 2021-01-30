@@ -30,6 +30,8 @@
 *.exe
 *.out
 *.app
+<<<<<<< HEAD
+=======
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -169,3 +171,4 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+>>>>>>> 305d6651e65b895ac5a8e905a19d7416b92ce028

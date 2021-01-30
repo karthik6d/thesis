@@ -1,0 +1,7 @@
+size,numberQueries,dataDistribution,snappy_read_times,simd_read_times,rle_read_times,uncompressed_read_times,snappy_load_times,simd_load_times,rle_load_times,uncompressed_load_times,snappy_sizes,simd_sizes,rle_sizes,uncompressed_sizes,readPercentage
+10000,10000,0
+10000,10000,1
+10000,10000,2
+10000,10000,0
+10000,10000,1
+1000,10000,2
