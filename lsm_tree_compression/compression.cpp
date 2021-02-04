@@ -2,6 +2,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
+#include <stdio.h>
 #include "compression.h"
 #include <string>
 #include <iostream>
@@ -10,11 +11,75 @@
 #include "snappy.h"
 #include "SIMDCompressionAndIntersection/include/codecfactory.h"
 #include "SIMDCompressionAndIntersection/include/intersection.h"
+#include "zlib.h"
 #include "lsm_tree.h"
 
 using namespace std;
 
 int compressed_file_count = 0;
+
+string ZLIB_encode(vector <kv> kvs) {
+    std::string new_path = new_compressed_file();
+    ofstream data_file(new_path, ios::binary);
+
+    // Get size of the data
+    int data_size = sizeof(kv) * kvs.size();
+    uInt output_size = (1.1 * data_size) + 12;
+    char* compressed_data = (char*) malloc(output_size);
+
+    // Define the structure for ZLIB
+    z_stream defstream;
+    defstream.zalloc = Z_NULL;
+    defstream.zfree = Z_NULL;
+    defstream.opaque = Z_NULL;
+    defstream.avail_in = (uInt)data_size+1; // size of input, string + terminator
+    defstream.next_in = (Bytef *)kvs.data(); // input char array
+    defstream.avail_out = (uInt)output_size+1; // size of output
+    defstream.next_out = (Bytef *)compressed_data; // output char array
+    
+    // the actual compression work.
+    deflateInit(&defstream, Z_BEST_SPEED);
+    deflate(&defstream, Z_FINISH);
+    deflateEnd(&defstream);
+
+    // Write the data to disk
+    data_file.write((const char*)compressed_data, defstream.total_out);
+    data_file.close();
+
+    return new_path;
+}
+
+kv* ZLIB_decode(string filepath) {
+    ifstream f(filepath, ios::ate | ios::binary);
+    int length = f.tellg();
+
+    f.seekg(0, f.beg);
+
+    //Prepare the buffer with compressed data from disk
+    char* buf = (char*) malloc(length);
+    f.read((char*)buf, length);
+
+    // Output buffer of compressed data
+    int data_size = DEFAULT_BUFFER_SIZE * sizeof(kv);
+    char* uncompressed_data = (char*) malloc(data_size);
+
+    // Define structure for ZLib compression
+    z_stream infstream;
+    infstream.zalloc = Z_NULL;
+    infstream.zfree = Z_NULL;
+    infstream.opaque = Z_NULL;
+    infstream.avail_in = (uInt)length; // size of input
+    infstream.next_in = (Bytef *)buf; // input char array
+    infstream.avail_out = (uInt)data_size; // size of output
+    infstream.next_out = (Bytef *)uncompressed_data; // output char array
+
+    // ZLib compression at work
+    inflateInit(&infstream);
+    inflate(&infstream, Z_NO_FLUSH);
+    inflateEnd(&infstream);
+
+    return (kv*) uncompressed_data;
+}
 
 string RLE_encode(vector<kv> kvs) {
     // Create the output file

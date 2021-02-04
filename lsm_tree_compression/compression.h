@@ -23,3 +23,11 @@ kv* SIMD_decode(string filepath);
 //Basic RLE for Testing
 string RLE_encode(vector<kv> kvs);
 kv* RLE_decode(string filepath);
+
+//ZLib Functionality
+std::string ZLIB_encode(std::vector<kv> kvs);
+kv* ZLIB_decode(string filepath);
+
+//ZStandard Functionality
+std::string ZSTANDARD_encode(std::vector<kv> kvs);
+kv* ZSTANDARD_decode(string filepath);
