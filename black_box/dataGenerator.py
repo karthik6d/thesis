@@ -92,7 +92,7 @@ def createDataParameters(numEntries):
     return size, numberQueries, dataDistribution, readPercentage
 
 def main():
-    numEntries = 1
+    numEntries = 50
     query_path = "queries.dsl"
     size, numberQueries, dataDistribution, readPercentage = createDataParameters(numEntries)
     # Output Data
