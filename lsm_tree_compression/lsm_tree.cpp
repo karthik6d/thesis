@@ -91,6 +91,9 @@ subcomponent::subcomponent(vector<kv> kvs) {
   else if(current_db->compressed == 4){
     this->filename = ZLIB_encode(kvs);
   }
+  else if(current_db->compressed == 5){
+    this->filename = ZSTANDARD_encode(kvs);
+  }
   else {
     this->filename = string("data/C");
     this->filename.append(to_string(component_count++));
@@ -275,6 +278,12 @@ vector<kv> subcomponent::get_kvs() {
   
   else if(current_db -> compressed == 4){
     kv* buf = ZLIB_decode(this->filename);
+
+    return vector<kv>(buf, buf + this->num_values);
+  }
+
+  else if(current_db -> compressed == 5) {
+    kv* buf = ZSTANDARD_decode(this->filename);
 
     return vector<kv>(buf, buf + this->num_values);
   }

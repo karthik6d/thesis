@@ -13,12 +13,54 @@
 #include "SIMDCompressionAndIntersection/include/intersection.h"
 #include "zlib.h"
 #include "lsm_tree.h"
+#include "zstd.h"
 
 using namespace std;
 
 int compressed_file_count = 0;
 
-string ZLIB_encode(vector <kv> kvs) {
+string ZSTANDARD_encode(vector<kv> kvs) {
+    std::string new_path = new_compressed_file();
+    ofstream data_file(new_path, ios::binary);
+
+    // Get size of compressed data using ZStandard library
+    int data_size = sizeof(kv) * kvs.size();
+    size_t compressed_buf_size = ZSTD_compressBound(data_size);
+    void* compressed_data = malloc(compressed_buf_size);
+
+    // Compress the data: Can change last variable for compression level 1(lowest) to 22(highest)
+    size_t actual_size = ZSTD_compress(compressed_data, compressed_buf_size, (const void*) kvs.data(), data_size, 10);
+
+    // Write data to disk
+    data_file.write((const char*)compressed_data, actual_size);
+    data_file.close();
+
+    free(compressed_data);
+    return new_path;
+}
+
+kv* ZSTANDARD_decode(string filepath) {
+    ifstream f(filepath, ios::ate | ios::binary);
+    int length = f.tellg();
+
+    f.seekg(0, f.beg);
+
+    //Prepare the buffer with compressed data from disk
+    char* buf = (char*) malloc(length);
+    f.read((char*)buf, length);
+
+    // Create the output data
+    int data_size = DEFAULT_BUFFER_SIZE * sizeof(kv);
+    void* uncompressed_data = (void*) malloc(data_size);
+
+    // Decompress the data
+    size_t new_size = ZSTD_decompress(uncompressed_data, data_size, (void*) buf, length);
+
+    free(buf);
+    return (kv*)uncompressed_data;
+}
+
+string ZLIB_encode(vector<kv> kvs) {
     std::string new_path = new_compressed_file();
     ofstream data_file(new_path, ios::binary);
 
@@ -46,6 +88,7 @@ string ZLIB_encode(vector <kv> kvs) {
     data_file.write((const char*)compressed_data, defstream.total_out);
     data_file.close();
 
+    free(compressed_data);
     return new_path;
 }
 
@@ -78,6 +121,7 @@ kv* ZLIB_decode(string filepath) {
     inflate(&infstream, Z_NO_FLUSH);
     inflateEnd(&infstream);
 
+    free(buf);
     return (kv*) uncompressed_data;
 }
 
@@ -103,7 +147,7 @@ string RLE_encode(vector<kv> kvs) {
             can_rle = false;
             break;
         }
-        // Update prev_value
+        // Update prev_value 
         prev_value = kvs.at(i).value;
     }
 
