@@ -160,7 +160,7 @@ def main():
     print("Number Errors: ", err_count)
     now = datetime.now()
     file_name = '../data/' + now.strftime("%d%m%Y%H%M%S") + '.csv'
-    columns = ['size', 'numberQueries', 'keyDistribution', 'valueDistribution', 'snappy_read_times', 'simd_read_times', 'rle_read_times', 'zlib_read_times', 'zstandard_read_times'
+    columns = ['size', 'numberQueries', 'keyDistribution', 'valueDistribution', 'snappy_read_times', 'simd_read_times', 'rle_read_times', 'zlib_read_times', 'zstandard_read_times',
                                         'uncompressed_read_times', 'snappy_load_times', 'simd_load_times', 'rle_load_times',
                                         'zlib_load_times', 'zstandard_load_times', 'uncompressed_load_times',
                                         'snappy_sizes', 'simd_sizes', 'rle_sizes', 'zlib_sizes', 'zstandard_sizes', 'uncompressed_sizes', 'readPercentage']
