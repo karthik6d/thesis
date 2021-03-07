@@ -13,7 +13,6 @@
 
 // Defines number of key values pairs in Main Memory
 #define DEFAULT_BUFFER_SIZE 16384
-
 // Defines the number of components per level before merging
 #define COMPONENTS_PER_LEVEL 4
 
@@ -56,6 +55,7 @@ typedef struct subcomponent {
   int max_value;
   bloom_filter filter;
   unsigned int num_values;
+  int compressed;
 
   subcomponent(vector<kv> kvs);
 

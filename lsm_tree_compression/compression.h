@@ -12,6 +12,10 @@ extern SIMDCompressionLib::IntegerCODEC &codec;
 
 // Standardize how we create new compression files
 string new_compressed_file();
+
+// Functional tool to compute the BEST compression scheme based on space
+int best_scheme(std::vector<kv> kvs);
+
 // Snappy Compression
 std::string SNAPPY_encode(std::vector<kv> kvs);
 kv* SNAPPY_decode(string filepath);
