@@ -1,5 +1,6 @@
 #include "server.h"
 #include "lsm_tree.h"
+#include "constants.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -16,6 +17,9 @@
 #include <tuple>
 #include <unordered_map>
 #include <vector>
+#include <unordered_map>
+#include <string> 
+#include <stdexcept>
 
 using namespace std;
 
@@ -61,7 +65,7 @@ void load(string path) {
 
   clock_t start;
   double duration;
-  start = clock();
+  start = clock();  
 
 
   while (getline(ss, line)) {
@@ -90,6 +94,14 @@ int main(int argc, char** argv) {
   string output_str;
   int is_compressed = atoi(argv[1]);
   ifstream query_file(argv[2]);
+
+  unordered_map<string, float> constants = write_constants_to_file();
+
+  cout << "CONSTANTS: " << endl;
+  for(auto k : constants) {
+    cout << k.first << ":" << k.second << endl;
+  }
+
 
   clock_t start;
   double duration;

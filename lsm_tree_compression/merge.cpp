@@ -65,6 +65,7 @@ component merge(vector<component> components) {
 
     // while the heap still contains keys identical to what was just removed
     while (heap.size() != 0 && heap.peek().k.key == kvi.k.key) {
+      cout << "this shoudl never occur" << endl;
       // remove that element
       kvi = heap.pop();
 
@@ -78,12 +79,14 @@ component merge(vector<component> components) {
     }
 
     if (kvs.size() == DEFAULT_BUFFER_SIZE) {
+      //cout << "KVS SIZE: " << kvs.size() << endl;
       result.subcomponents.push_back(subcomponent(kvs));
       kvs.clear();
     }
   }
 
   if (kvs.size() > 0) {
+    //cout << "OUTSIDE LOOP KVS SIZE: " << kvs.size() << endl;
     result.subcomponents.push_back(subcomponent(kvs));
   }
 

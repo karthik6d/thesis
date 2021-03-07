@@ -19,6 +19,106 @@ using namespace std;
 
 int compressed_file_count = 0;
 
+int best_scheme(vector<kv> kvs) {
+    int best_size = DEFAULT_BUFFER_SIZE;
+
+    // ZStandard Space Savings (5)
+    int data_size = sizeof(kv) * kvs.size();
+    size_t compressed_buf_size = ZSTD_compressBound(data_size);
+    void* compressed_data_zstandard = malloc(compressed_buf_size);
+
+    // Compress the data: Can change last variable for compression level 1(lowest) to 22(highest)
+    size_t zstandard_size = ZSTD_compress(compressed_data_zstandard, compressed_buf_size, (const void*) kvs.data(), data_size, 10);
+
+    // ZLib Space Savings (4)
+    // Get size of the data
+    //int data_size = sizeof(kv) * kvs.size();
+    uInt output_size = (1.1 * data_size) + 12;
+    char* compressed_data = (char*) malloc(output_size);
+
+    // Define the structure for ZLIB
+    z_stream defstream;
+    defstream.zalloc = Z_NULL;
+    defstream.zfree = Z_NULL;
+    defstream.opaque = Z_NULL;
+    defstream.avail_in = (uInt)data_size+1; // size of input, string + terminator
+    defstream.next_in = (Bytef *)kvs.data(); // input char array
+    defstream.avail_out = (uInt)output_size+1; // size of output
+    defstream.next_out = (Bytef *)compressed_data; // output char array
+    
+    // the actual compression work.
+    deflateInit(&defstream, Z_BEST_SPEED);
+    deflate(&defstream, Z_FINISH);
+    deflateEnd(&defstream);
+
+    size_t zlib_size = defstream.total_out;
+
+    // RLE Space Savings (3)
+    // Get the initial to make RLE
+    int first_value = kvs.at(0).key;
+    int diff = kvs.at(0).value - kvs.at(0).key;
+    int prev_value = kvs.at(0).value;
+    bool can_rle = true;
+    size_t rle_size;
+
+    for(int i = 1; i < kvs.size(); i++) {
+        // First check of current key against previous value
+        if(diff != kvs.at(i).key - prev_value){
+            can_rle = false;
+            break;
+        }
+        // Second check of current value against current key
+        if(diff != kvs.at(i).value - kvs.at(i).key){
+            can_rle = false;
+            break;
+        }
+        // Update prev_value 
+        prev_value = kvs.at(i).value;
+    }
+
+    if(can_rle) {
+        vector<int> to_disk;
+        to_disk.push_back(first_value);
+        to_disk.push_back(diff);
+
+        rle_size = to_disk.size() * sizeof(int);
+    } 
+    else {
+        rle_size = DEFAULT_BUFFER_SIZE * sizeof(kv);
+    }
+
+    // SIMD Size (2)
+    // Begin SIMD compression
+    SIMDCompressionLib::IntegerCODEC &codec = *SIMDCompressionLib::CODECFactory::getFromName("s4-fastpfor-d1");
+
+    vector<uint32_t> compressed_output(kvs.size()*2 + 1024);
+    // N+1024 should be plenty
+
+    size_t compressedsize = compressed_output.size();
+    codec.encodeArray((uint32_t*)kvs.data(), kvs.size()*2, compressed_output.data(), compressedsize);
+    size_t simd_size = compressedsize;
+
+    // Snappy Size (1)
+    string compressed_str;
+    snappy::Compress((char*) kvs.data(), kvs.size()*sizeof(kv), &compressed_str);
+    size_t snappy_size = compressed_str.size();
+
+    // Figure out the best one based on size
+    size_t sizes[] = {DEFAULT_BUFFER_SIZE * sizeof(kv), snappy_size, simd_size, rle_size, zlib_size, zstandard_size};
+    cout << "Sizes: " << DEFAULT_BUFFER_SIZE * sizeof(kv) << ", " << snappy_size << ", " << simd_size << ", " << rle_size << ", " << zlib_size << ", " << zstandard_size << endl;
+    size_t best = DEFAULT_BUFFER_SIZE * sizeof(kv);
+    int best_scheme = 0;
+
+    for(int i = 0; i < 6; i ++) {
+        if(sizes[i] < best) {
+            best = sizes[i];
+            best_scheme = i;
+        }
+    }
+    cout << "Best Scheme: " << best_scheme << endl;
+    return best_scheme;
+}
+
 string ZSTANDARD_encode(vector<kv> kvs) {
     std::string new_path = new_compressed_file();
     ofstream data_file(new_path, ios::binary);
@@ -57,6 +157,7 @@ kv* ZSTANDARD_decode(string filepath) {
     size_t new_size = ZSTD_decompress(uncompressed_data, data_size, (void*) buf, length);
 
     free(buf);
+    f.close();
     return (kv*)uncompressed_data;
 }
 
@@ -122,6 +223,7 @@ kv* ZLIB_decode(string filepath) {
     inflateEnd(&infstream);
 
     free(buf);
+    f.close();
     return (kv*) uncompressed_data;
 }
 
@@ -197,9 +299,11 @@ kv* RLE_decode(string filepath) {
         }
         
         free(buf);
+        f.close();
         return data;
     }
 
+    f.close();
     return (kv*) buf;
 }
 
@@ -220,12 +324,6 @@ string SIMD_encode(std::vector<kv> kvs){
     // if desired, shrink back the array:
     compressed_output.resize(compressedsize);
     compressed_output.shrink_to_fit();
-
-    vector<uint32_t> mydataback(kvs.size() * 2);
-    size_t recoveredsize = mydataback.size();
-    
-    codec.decodeArray(compressed_output.data(), compressed_output.size(), mydataback.data(), recoveredsize);
-    mydataback.resize(recoveredsize);
 
     data_file.write((const char*)compressed_output.data(), compressedsize*sizeof(uint32_t));
     data_file.close();
@@ -253,6 +351,7 @@ kv* SIMD_decode(string filepath) {
     //cout << "Recovered Size: " << endl;
     
     free(buf);
+    f.close();
     return (kv*) mydataback;
 }
 
@@ -261,6 +360,7 @@ string SNAPPY_encode(vector<kv> kvs) {
     std::string new_path = new_compressed_file();
     ofstream data_file(new_path, ios::binary);
 
+    //cout << "FILE PATH: " << new_path << endl;
     string compressed_data;
     snappy::Compress((char*) kvs.data(), kvs.size()*sizeof(kv), &compressed_data);
     //cout << "Uncompressed Size: " << kvs.size()*sizeof(kv) << " Compressed Size: " << compressed_data.size() << endl; 
@@ -284,6 +384,7 @@ kv* SNAPPY_decode(string filepath) {
     snappy::Uncompress(buf, length, &uncompressed_data);
 
     free(buf);
+    f.close();
     return (kv*) uncompressed_data.c_str();
 }
 

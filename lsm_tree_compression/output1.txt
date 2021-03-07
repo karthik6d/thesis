@@ -1,0 +1,12 @@
+reading csv
+this shoudl never occur
+this shoudl never occur
+Execution Time of Load: 0.399244
+
+starting workload
+this shoudl never occur
+this shoudl never occur
+this shoudl never occur
+
+Execution Time of Reads and Writes: 4.02415
+finished workload, writing results to file
