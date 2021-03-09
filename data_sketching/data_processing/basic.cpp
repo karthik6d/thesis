@@ -11,7 +11,6 @@
 #include "zstd.h"
 
 using namespace std;
-namespace fs = std::filesystem;
 
 #define BINS 50
 
@@ -44,9 +43,7 @@ size_t zlib_space(vector<kv> kvs, int DEFAULT_BUFFER_SIZE) {
     //cout << "Where the seg fault at" << endl;
     // the actual compression work.
     deflateInit(&defstream, Z_BEST_SPEED);
-    cout << "HUH" << endl;
     deflate(&defstream, Z_FINISH);
-    cout << "Here" << endl;
     deflateEnd(&defstream);
 
     //cout << "Why isn't this compression working" << endl;
@@ -144,6 +141,7 @@ unordered_map<string, float> getCompressionRates(vector<kv> kvs, int DEFAULT_BUF
     codec.encodeArray((uint32_t*)kvs.data(), kvs.size()*2, compressed_output.data(), compressedsize);
     size_t simd_size = compressedsize;
 
+    
     //cout << "SEG FAULT4" << endl;
 
     // Snappy Size (1)
@@ -153,12 +151,16 @@ unordered_map<string, float> getCompressionRates(vector<kv> kvs, int DEFAULT_BUF
 
     //cout << "SEG FAULT5" << endl;
     // Figure out the best one based on size
+    cout << "DEFAULT BUFFER SIZE: " << (DEFAULT_BUFFER_SIZE * sizeof(kv)) << endl;
+    cout << "Snappy: " << (float)snappy_size / (float) (DEFAULT_BUFFER_SIZE * sizeof(kv))<< endl;
+    cout << "Zlib: " << zlib_size << endl;
+    cout << "Zstandard: " << zstandard_size << endl;
     unordered_map<string, float> compression_rates;
-    compression_rates["snappy"] = (float) snappy_size / (float) DEFAULT_BUFFER_SIZE * sizeof(kv);
-    compression_rates["simd"] = (float) simd_size / (float) DEFAULT_BUFFER_SIZE * sizeof(kv);
-    compression_rates["rle"] = (float) rle_size / (float) DEFAULT_BUFFER_SIZE * sizeof(kv);
-    compression_rates["zlib"] = (float) zlib_size / (float) DEFAULT_BUFFER_SIZE * sizeof(kv);
-    compression_rates["zstandard"] = (float) zstandard_size / (float) zstandard_size * sizeof(kv);
+    compression_rates["snappy"] = (float) snappy_size / (float) (DEFAULT_BUFFER_SIZE * sizeof(kv));
+    compression_rates["simd"] = (float) simd_size / (float) (DEFAULT_BUFFER_SIZE * sizeof(kv));
+    compression_rates["rle"] = (float) rle_size / (float) (DEFAULT_BUFFER_SIZE * sizeof(kv));
+    compression_rates["zlib"] = (float) zlib_size / (float) (DEFAULT_BUFFER_SIZE * sizeof(kv));
+    compression_rates["zstandard"] = (float) zstandard_size / (float) (DEFAULT_BUFFER_SIZE * sizeof(kv));
 
     return compression_rates;
 }
