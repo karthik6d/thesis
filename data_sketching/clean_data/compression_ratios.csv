@@ -1,0 +1,5 @@
+zstandard,0.125
+snappy,0.52075
+simd,0.102054
+rle,1
+zlib,0.661401

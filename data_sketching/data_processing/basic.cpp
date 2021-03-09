@@ -11,9 +11,8 @@
 #include "zstd.h"
 
 using namespace std;
-namespace fs = std::filesystem;
 
-#define BINS 50
+#define BINS 60
 
 typedef struct kv {
   int key;
@@ -154,11 +153,11 @@ unordered_map<string, float> getCompressionRates(vector<kv> kvs, int DEFAULT_BUF
     //cout << "SEG FAULT5" << endl;
     // Figure out the best one based on size
     unordered_map<string, float> compression_rates;
-    compression_rates["snappy"] = (float) snappy_size / (float) DEFAULT_BUFFER_SIZE * sizeof(kv);
-    compression_rates["simd"] = (float) simd_size / (float) DEFAULT_BUFFER_SIZE * sizeof(kv);
-    compression_rates["rle"] = (float) rle_size / (float) DEFAULT_BUFFER_SIZE * sizeof(kv);
-    compression_rates["zlib"] = (float) zlib_size / (float) DEFAULT_BUFFER_SIZE * sizeof(kv);
-    compression_rates["zstandard"] = (float) zstandard_size / (float) zstandard_size * sizeof(kv);
+    compression_rates["snappy"] = (float) snappy_size / (float) (DEFAULT_BUFFER_SIZE * sizeof(kv));
+    compression_rates["simd"] = (float) simd_size / (float) (DEFAULT_BUFFER_SIZE * sizeof(kv));
+    compression_rates["rle"] = (float) rle_size / (float) (DEFAULT_BUFFER_SIZE * sizeof(kv));
+    compression_rates["zlib"] = (float) zlib_size / (float) (DEFAULT_BUFFER_SIZE * sizeof(kv));
+    compression_rates["zstandard"] = (float) zstandard_size / (float) (zstandard_size * sizeof(kv));
 
     return compression_rates;
 }
