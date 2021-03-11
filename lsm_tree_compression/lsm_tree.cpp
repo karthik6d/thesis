@@ -80,8 +80,8 @@ subcomponent::subcomponent(vector<kv> kvs) {
     }
   }
 
-  this->compressed = best_scheme(kvs);
-  //cout << "Best Scheme: " << this->compressed << endl;
+  this->compressed = current_db->compressed;
+  cout << best_scheme(kvs) << endl;
 
   // Have to add the compressed as well
   if(this->compressed == 1){

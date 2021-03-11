@@ -12,7 +12,7 @@
 
 using namespace std;
 
-#define BINS 50
+#define BINS 60
 
 typedef struct kv {
   int key;
@@ -23,6 +23,18 @@ int compare_kvs(kv a, kv b) {
   int a_val = a.key < 0 ? -a.key : a.key;
   int b_val = b.key < 0 ? -b.key : b.key;
   return a_val < b_val;
+}
+
+size_t zstandard_space(vector<kv> kvs, int DEFAULT_BUFFER_SIZE){
+    // ZStandard Space Savings (5)
+    int data_size = sizeof(kv) * kvs.size();
+    size_t compressed_buf_size = ZSTD_compressBound(data_size);
+    void* compressed_data_zstandard = malloc(compressed_buf_size);
+
+    // Compress the data: Can change last variable for compression level 1(lowest) to 22(highest)
+    size_t zstandard_size = ZSTD_compress(compressed_data_zstandard, compressed_buf_size, (const void*) kvs.data(), data_size, 10);
+
+    return zstandard_size;
 }
 
 size_t zlib_space(vector<kv> kvs, int DEFAULT_BUFFER_SIZE) {
@@ -52,48 +64,7 @@ size_t zlib_space(vector<kv> kvs, int DEFAULT_BUFFER_SIZE) {
     return zlib_size;
 }
 
-unordered_map<string, float> getCompressionRates(vector<kv> kvs, int DEFAULT_BUFFER_SIZE) {
-    int best_size = DEFAULT_BUFFER_SIZE;
-
-    // ZStandard Space Savings (5)
-    int data_size = sizeof(kv) * kvs.size();
-    size_t compressed_buf_size = ZSTD_compressBound(data_size);
-    void* compressed_data_zstandard = malloc(compressed_buf_size);
-
-    // Compress the data: Can change last variable for compression level 1(lowest) to 22(highest)
-    size_t zstandard_size = ZSTD_compress(compressed_data_zstandard, compressed_buf_size, (const void*) kvs.data(), data_size, 10);
-
-    //cout << "SEG FAULT1" << endl;
-    // ZLib Space Savings (4)
-    // Get size of the data
-    //int data_size = sizeof(kv) * kvs.size();
-    // uInt output_size = (1.1 * data_size) + 12;
-    // char* compressed_data = (char*) malloc(output_size);
-
-    // // Define the structure for ZLIB
-    // z_stream defstream;
-    // defstream.zalloc = Z_NULL;
-    // defstream.zfree = Z_NULL;
-    // defstream.opaque = Z_NULL;
-    // defstream.avail_in = (uInt)data_size+1; // size of input, string + terminator
-    // defstream.next_in = (Bytef *)kvs.data(); // input char array
-    // defstream.avail_out = (uInt)output_size+1; // size of output
-    // defstream.next_out = (Bytef *)compressed_data; // output char array
-    
-    // //cout << "Where the seg fault at" << endl;
-    // // the actual compression work.
-    // deflateInit(&defstream, Z_BEST_SPEED);
-    // cout << "HUH" << endl;
-    // deflate(&defstream, Z_FINISH);
-    // cout << "Here" << endl;
-    // deflateEnd(&defstream);
-
-    //cout << "Why isn't this compression working" << endl;
-
-    size_t zlib_size = zlib_space(kvs, DEFAULT_BUFFER_SIZE);
-
-    //cout << "SEG FAULT2" << endl;
-
+size_t rle_space(vector<kv> kvs, int DEFAULT_BUFFER_SIZE) {
     // RLE Space Savings (3)
     // Get the initial to make RLE
     int first_value = kvs.at(0).key;
@@ -128,10 +99,10 @@ unordered_map<string, float> getCompressionRates(vector<kv> kvs, int DEFAULT_BUF
         rle_size = DEFAULT_BUFFER_SIZE * sizeof(kv);
     }
 
-    //cout << "SEG FAULT3" << endl;
+    return rle_size;
+}
 
-    // SIMD Size (2)
-    // Begin SIMD compression
+size_t simd_space(vector<kv> kvs, int DEFAULT_BUFFER_SIZE) {
     SIMDCompressionLib::IntegerCODEC &codec = *SIMDCompressionLib::CODECFactory::getFromName("s4-fastpfor-d1");
 
     vector<uint32_t> compressed_output(kvs.size()*2 + 1024);
@@ -141,13 +112,36 @@ unordered_map<string, float> getCompressionRates(vector<kv> kvs, int DEFAULT_BUF
     codec.encodeArray((uint32_t*)kvs.data(), kvs.size()*2, compressed_output.data(), compressedsize);
     size_t simd_size = compressedsize;
 
-    
-    //cout << "SEG FAULT4" << endl;
+    return simd_size;
+}
 
+size_t snappy_space(vector<kv> kvs, int DEFAULT_BUFFER_SIZE) {
     // Snappy Size (1)
     string compressed_str;
     snappy::Compress((char*) kvs.data(), kvs.size()*sizeof(kv), &compressed_str);
     size_t snappy_size = compressed_str.size();
+
+    return snappy_size;
+}
+
+unordered_map<string, float> getCompressionRates(vector<kv> kvs, int DEFAULT_BUFFER_SIZE) {
+    int best_size = DEFAULT_BUFFER_SIZE;
+    vector<kv> kvs_zstandard(kvs);
+    vector<kv> kvs_zlib(kvs);
+    vector<kv> kvs_rle(kvs);
+    vector<kv> kvs_simd(kvs);
+    vector<kv> kvs_snappy(kvs);
+
+    // Compress the data: Can change last variable for compression level 1(lowest) to 22(highest)
+    size_t zstandard_size = zstandard_space(kvs_zstandard, DEFAULT_BUFFER_SIZE);
+
+    size_t zlib_size = zlib_space(kvs_zlib, DEFAULT_BUFFER_SIZE);
+
+    size_t rle_size = rle_space(kvs_rle, DEFAULT_BUFFER_SIZE);
+
+    size_t simd_size = simd_space(kvs_simd, DEFAULT_BUFFER_SIZE);
+
+    size_t snappy_size = snappy_space(kvs_snappy, DEFAULT_BUFFER_SIZE);
 
     //cout << "SEG FAULT5" << endl;
     // Figure out the best one based on size
