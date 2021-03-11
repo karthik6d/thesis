@@ -25,10 +25,14 @@ using namespace std;
 
 vector<workload_entry> workload;
 
-void create(string db_name, int is_compressed) {
+void create(string db_name, int is_compressed, unordered_map<string, float> constants, bool read_only, bool write_only, float leniency) {
   LSM_Tree* db = new LSM_Tree();
   db->name = db_name;
   db->compressed = is_compressed;
+  db->constants = constants;
+  db->read_only = read_only;
+  db->write_only = write_only;
+  db->leniency = leniency;
   current_db = db;
 
   mkdir("data", 0755);
@@ -86,7 +90,7 @@ void load(string path) {
 }
 
 int main(int argc, char** argv) {
-  if (argc != 3) {
+  if (argc != 6) {
     std::cout << "Need to pass in query file or compressed state" << endl;
     return 1;
   }
@@ -94,13 +98,16 @@ int main(int argc, char** argv) {
   string output_str;
   int is_compressed = atoi(argv[1]);
   ifstream query_file(argv[2]);
+  bool read_only = atoi(argv[3]);
+  bool write_only = atoi(argv[4]);
+  float leniency = stof(argv[5]);
 
   unordered_map<string, float> constants = write_constants_to_file();
 
-  cout << "CONSTANTS: " << endl;
-  for(auto k : constants) {
-    cout << k.first << ":" << k.second << endl;
-  }
+  // cout << "CONSTANTS: " << endl;
+  // for(auto k : constants) {
+  //   cout << k.first << ":" << k.second << endl;
+  // }
 
 
   clock_t start;
@@ -118,7 +125,7 @@ int main(int argc, char** argv) {
     } while (ss);
 
     if (elements[0].compare("create") == 0) {
-      create(elements.at(1), is_compressed);
+      create(elements.at(1), is_compressed, constants, read_only, write_only, leniency);
     } else if (elements[0].compare("load") == 0) {
       load(elements.at(1));
     } else if (elements[0].compare("read") == 0) {

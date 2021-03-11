@@ -80,9 +80,26 @@ subcomponent::subcomponent(vector<kv> kvs) {
     }
   }
 
-  this->compressed = current_db->compressed;
-  cout << best_scheme(kvs) << endl;
+  // Print out what the R's should be to hold this leniency model
+  vector<string> compression_schemes;
+  compression_schemes.push_back("snappy");
+  compression_schemes.push_back("simd");
+  compression_schemes.push_back("rle");
+  compression_schemes.push_back("zlib");
+  compression_schemes.push_back("zstandard");
 
+  unordered_map<string, float> optimal_rs;
+
+  for(int i = 0; i < compression_schemes.size(); i++) {
+    optimal_rs[compression_schemes.at(i)] = optimal_r(current_db -> constants, current_db->read_only, current_db->write_only, current_db->leniency, compression_schemes.at(i));
+  }
+
+  vector<float> hist = histogram(kvs, 50);
+
+  // Do the prediction here
+  
+
+  this->compressed = current_db->compressed;
   // Have to add the compressed as well
   if(this->compressed == 1){
     this->filename = SNAPPY_encode(kvs);

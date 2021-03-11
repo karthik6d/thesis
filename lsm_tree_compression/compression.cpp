@@ -19,115 +19,47 @@ using namespace std;
 
 int compressed_file_count = 0;
 
-int best_scheme(vector<kv> kvs) {
-    // int best_size = DEFAULT_BUFFER_SIZE;
-
-    // // ZStandard Space Savings (5)
-    // int data_size = sizeof(kv) * kvs.size();
-    // size_t compressed_buf_size = ZSTD_compressBound(data_size);
-    // void* compressed_data_zstandard = malloc(compressed_buf_size);
-
-    // // Compress the data: Can change last variable for compression level 1(lowest) to 22(highest)
-    // size_t zstandard_size = ZSTD_compress(compressed_data_zstandard, compressed_buf_size, (const void*) kvs.data(), data_size, 10);
-
-    // // ZLib Space Savings (4)
-    // // Get size of the data
-    // //int data_size = sizeof(kv) * kvs.size();
-    // uInt output_size = (1.1 * data_size) + 12;
-    // char* compressed_data = (char*) malloc(output_size);
-
-    // // Define the structure for ZLIB
-    // z_stream defstream;
-    // defstream.zalloc = Z_NULL;
-    // defstream.zfree = Z_NULL;
-    // defstream.opaque = Z_NULL;
-    // defstream.avail_in = (uInt)data_size+1; // size of input, string + terminator
-    // defstream.next_in = (Bytef *)kvs.data(); // input char array
-    // defstream.avail_out = (uInt)output_size+1; // size of output
-    // defstream.next_out = (Bytef *)compressed_data; // output char array
-    
-    // // the actual compression work.
-    // deflateInit(&defstream, Z_BEST_SPEED);
-    // deflate(&defstream, Z_FINISH);
-    // deflateEnd(&defstream);
-
-    // size_t zlib_size = defstream.total_out;
-
-    // // RLE Space Savings (3)
-    // // Get the initial to make RLE
-    // int first_value = kvs.at(0).key;
-    // int diff = kvs.at(0).value - kvs.at(0).key;
-    // int prev_value = kvs.at(0).value;
-    // bool can_rle = true;
-    // size_t rle_size;
-
-    // for(int i = 1; i < kvs.size(); i++) {
-    //     // First check of current key against previous value
-    //     if(diff != kvs.at(i).key - prev_value){
-    //         can_rle = false;
-    //         break;
-    //     }
-    //     // Second check of current value against current key
-    //     if(diff != kvs.at(i).value - kvs.at(i).key){
-    //         can_rle = false;
-    //         break;
-    //     }
-    //     // Update prev_value 
-    //     prev_value = kvs.at(i).value;
-    // }
-
-    // if(can_rle) {
-    //     vector<int> to_disk;
-    //     to_disk.push_back(first_value);
-    //     to_disk.push_back(diff);
-
-    //     rle_size = to_disk.size() * sizeof(int);
-    // } 
-    // else {
-    //     rle_size = DEFAULT_BUFFER_SIZE * sizeof(kv);
-    // }
-
-    // // SIMD Size (2)
-    // // Begin SIMD compression
-    for(int i = 0; i < 10; i++) {
-        cout << kvs.at(i).key << ":" <<kvs.at(i).value << "\t";
+float optimal_r(unordered_map<string, float> constants, bool read_only, bool write_only, float leniency, string compression_scheme) {
+    float r = 1.0;
+    if(read_only) {
+        string key = compression_scheme + "_decompression_rate";
+        cout << "Decompression Rate: " << constants[key] << endl;
+        cout << "File IO from Disk: " << constants["file_io_from_disk"] << endl;
+        float numerator = (1.0 + leniency) * constants[key];
+        float denominator = (constants[key] + constants["file_io_from_disk"]);
+        r = numerator / denominator;
     }
-    cout << endl;
-    SIMDCompressionLib::IntegerCODEC &codec = *SIMDCompressionLib::CODECFactory::getFromName("s4-fastpfor-d1");
-
-    vector<uint32_t> compressed_output(kvs.size()*2 + 1024);
-    // N+1024 should be plenty
-
-    size_t compressedsize = compressed_output.size();
-    codec.encodeArray((uint32_t*)kvs.data(), kvs.size()*2, compressed_output.data(), compressedsize);
-    size_t simd_size = compressedsize;
-
-    for(int i = 0; i < 10; i ++) {
-        cout << kvs.at(i).key << ":" <<kvs.at(i).value << "\t";
+    else if(write_only) {
+        string key = compression_scheme + "_compression_rate";
+        float first_fraction = (1.0 + leniency);
+        float second_fraction = (constants["file_io_to_disk"] / constants[key]);
+        r = first_fraction - second_fraction;
     }
-    cout << endl;
-    // Snappy Size (1)
-    string compressed_str;
-    cout << "KVS LEN: " << kvs.size() << endl;
-    snappy::Compress((char*) kvs.data(), kvs.size()*sizeof(kv), &compressed_str);
-    cout << compressed_str.size() << endl;
-    size_t snappy_size = compressed_str.size();
+    return r;
+}
 
-    // Figure out the best one based on size
-    // size_t sizes[] = {DEFAULT_BUFFER_SIZE * sizeof(kv), snappy_size, simd_size, rle_size, zlib_size, zstandard_size};
-    // cout << "Sizes: " << DEFAULT_BUFFER_SIZE * sizeof(kv) << ", " << snappy_size << ", " << simd_size << ", " << rle_size << ", " << zlib_size << ", " << zstandard_size << endl;
-    // size_t best = DEFAULT_BUFFER_SIZE * sizeof(kv);
-    // int best_scheme = 0;
+vector<float> histogram(vector<kv> arr, int bins) {
+    float* hist = (float*) malloc(bins * sizeof(int));
+    int diff = arr.at(arr.size() - 1).value - arr.at(0).key;
+    int interval = diff / bins;
 
-    // for(int i = 0; i < 6; i ++) {
-    //     if(sizes[i] < best) {
-    //         best = sizes[i];
-    //         best_scheme = i;
-    //     }
-    // }
-    int best_scheme = 0;
-    cout << "Best Scheme: " << best_scheme << endl;
-    return best_scheme;
+    for(int i = 0; i < arr.size(); i++) {
+        int diff1 = arr.at(i).key - arr.at(0).key;
+        int index_key = min(diff1 / interval, bins - 1);
+        hist[index_key] += 1.0;
+
+        int diff2 = arr.at(i).value - arr.at(0).key;
+        int index_value = min(diff2 / interval, bins - 1);
+        hist[index_value] += 1.0;
+    }
+
+    vector<float> hist_data;
+    for(int i = 0; i < bins; i++) {
+        hist[i] = hist[i] / (float)(arr.size() * 2);
+        hist_data.push_back(hist[i]);
+    }
+
+    return hist_data;
 }
 
 string ZSTANDARD_encode(vector<kv> kvs) {
