@@ -16,6 +16,7 @@
 #include <tuple>
 #include <unordered_map>
 #include <vector>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -65,6 +66,7 @@ subcomponent::subcomponent(vector<kv> kvs) {
 
   this->num_values = kvs.size();
 
+  // Will need to do some data sketching here before any compression scheme is sent
   for (auto pair : kvs) {
     int val = pair.key < 0 ? -pair.key : pair.key;
     this->filter.insert(pair.key);
@@ -78,20 +80,23 @@ subcomponent::subcomponent(vector<kv> kvs) {
     }
   }
 
+  this->compressed = current_db->compressed;
+  cout << best_scheme(kvs) << endl;
+
   // Have to add the compressed as well
-  if(current_db->compressed == 1){
+  if(this->compressed == 1){
     this->filename = SNAPPY_encode(kvs);
   }
-  else if(current_db->compressed == 2){
+  else if(this->compressed == 2){
     this->filename = SIMD_encode(kvs);
   }
-  else if(current_db->compressed == 3){
+  else if(this->compressed == 3){
     this->filename = RLE_encode(kvs);
   }
-  else if(current_db->compressed == 4){
+  else if(this->compressed == 4){
     this->filename = ZLIB_encode(kvs);
   }
-  else if(current_db->compressed == 5){
+  else if(this->compressed == 5){
     this->filename = ZSTANDARD_encode(kvs);
   }
   else {
@@ -258,31 +263,31 @@ component_iterator component::end() {
 }
 
 vector<kv> subcomponent::get_kvs() {
-  if(current_db->compressed == 1){
+  if(this->compressed == 1){
     kv* buf = SNAPPY_decode(this->filename);
     
     return vector<kv>(buf, buf + this->num_values);
   }
 
-  else if(current_db -> compressed == 2){
+  else if(this->compressed == 2){
     kv* buf = SIMD_decode(this->filename);
     
     return vector<kv>(buf, buf + this->num_values);
   }
 
-  else if(current_db -> compressed == 3){
+  else if(this->compressed == 3){
     kv* buf = RLE_decode(this->filename);
 
     return vector<kv>(buf, buf + this->num_values);
   }
   
-  else if(current_db -> compressed == 4){
+  else if(this->compressed == 4){
     kv* buf = ZLIB_decode(this->filename);
 
     return vector<kv>(buf, buf + this->num_values);
   }
 
-  else if(current_db -> compressed == 5) {
+  else if(this->compressed == 5) {
     kv* buf = ZSTANDARD_decode(this->filename);
 
     return vector<kv>(buf, buf + this->num_values);
