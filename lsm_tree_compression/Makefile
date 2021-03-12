@@ -19,9 +19,9 @@ clean:
 gen: generator/generator.go
 	cd generator && go build . && mv generator ../gen
 
-server: server.cpp server.h merge.cpp merge.h compression.cpp \
-	compression.h lsm_tree.cpp lsm_tree.h minheap.h bloom_filter.hpp
-	g++ -g -o server $(CPPFLAGS) server.cpp merge.cpp compression.cpp lsm_tree.cpp $(OBJECTS) -I/usr/local/opt/zlib/include -lz -Iinclude -I. -L. -lsnappy -lzstd
+server: server.cpp server.h merge.cpp merge.h compression.cpp constants.cpp \
+	constants.h compression.h lsm_tree.cpp lsm_tree.h minheap.h bloom_filter.hpp
+	g++ -g -o server $(CPPFLAGS) server.cpp merge.cpp compression.cpp lsm_tree.cpp constants.cpp $(OBJECTS) -I/usr/local/opt/zlib/include -lz -Iinclude -I. -L. -lsnappy -lzstd
 
 format:
 	clang-format -i *.cpp *.h

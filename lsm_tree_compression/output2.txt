@@ -1,0 +1,7 @@
+reading csv
+Execution Time of Load: 0.491131
+
+starting workload
+
+Execution Time of Reads and Writes: 3.96045
+finished workload, writing results to file
