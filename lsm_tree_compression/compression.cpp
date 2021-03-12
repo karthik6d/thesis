@@ -221,12 +221,6 @@ string SIMD_encode(std::vector<kv> kvs){
     compressed_output.resize(compressedsize);
     compressed_output.shrink_to_fit();
 
-    vector<uint32_t> mydataback(kvs.size() * 2);
-    size_t recoveredsize = mydataback.size();
-    
-    codec.decodeArray(compressed_output.data(), compressed_output.size(), mydataback.data(), recoveredsize);
-    mydataback.resize(recoveredsize);
-
     data_file.write((const char*)compressed_output.data(), compressedsize*sizeof(uint32_t));
     data_file.close();
 
