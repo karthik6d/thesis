@@ -25,7 +25,7 @@ using namespace std;
 
 vector<workload_entry> workload;
 
-void create(string db_name, int is_compressed, unordered_map<string, float> constants, bool read_only, bool write_only, float leniency) {
+void create(string db_name, int is_compressed, unordered_map<string, float> constants, unordered_map<string, dataset> models, bool read_only, bool write_only, float leniency) {
   LSM_Tree* db = new LSM_Tree();
   db->name = db_name;
   db->compressed = is_compressed;
@@ -33,6 +33,7 @@ void create(string db_name, int is_compressed, unordered_map<string, float> cons
   db->read_only = read_only;
   db->write_only = write_only;
   db->leniency = leniency;
+  db->models = models;
   current_db = db;
 
   mkdir("data", 0755);
@@ -103,12 +104,26 @@ int main(int argc, char** argv) {
   float leniency = stof(argv[5]);
 
   unordered_map<string, float> constants = write_constants_to_file();
+  vector<string> training_data_paths;
+  training_data_paths.push_back("../data_sketching/clean_data/clean_snappy.csv");
+  training_data_paths.push_back("../data_sketching/clean_data/clean_simd.csv");
+  training_data_paths.push_back("../data_sketching/clean_data/clean_rle.csv");
+  training_data_paths.push_back("../data_sketching/clean_data/clean_zlib.csv");
+  training_data_paths.push_back("../data_sketching/clean_data/clean_zstandard.csv");
 
-  // cout << "CONSTANTS: " << endl;
-  // for(auto k : constants) {
-  //   cout << k.first << ":" << k.second << endl;
-  // }
+  vector<int> training_data_num_features;
+  training_data_num_features.push_back(770);
+  training_data_num_features.push_back(770);
+  training_data_num_features.push_back(770);
+  training_data_num_features.push_back(769);
+  training_data_num_features.push_back(770);
 
+  unordered_map<string, dataset> rf_models;
+  rf_models["snappy"] = get_training_data(training_data_paths.at(0), 770, 50);
+  rf_models["simd"] = get_training_data(training_data_paths.at(1), 770, 50);
+  rf_models["rle"] = get_training_data(training_data_paths.at(2), 770, 50);
+  rf_models["zlib"] = get_training_data(training_data_paths.at(3), 769, 50);
+  rf_models["zstandard"] = get_training_data(training_data_paths.at(4), 770, 50);
 
   clock_t start;
   double duration;
@@ -125,7 +140,7 @@ int main(int argc, char** argv) {
     } while (ss);
 
     if (elements[0].compare("create") == 0) {
-      create(elements.at(1), is_compressed, constants, read_only, write_only, leniency);
+      create(elements.at(1), is_compressed, constants, rf_models, read_only, write_only, leniency);
     } else if (elements[0].compare("load") == 0) {
       load(elements.at(1));
     } else if (elements[0].compare("read") == 0) {

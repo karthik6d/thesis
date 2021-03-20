@@ -23,16 +23,14 @@ float optimal_r(unordered_map<string, float> constants, bool read_only, bool wri
     float r = 1.0;
     if(read_only) {
         string key = compression_scheme + "_decompression_rate";
-        cout << "Decompression Rate: " << constants[key] << endl;
-        cout << "File IO from Disk: " << constants["file_io_from_disk"] << endl;
         float numerator = (1.0 + leniency) * constants[key];
-        float denominator = (constants[key] + constants["file_io_from_disk"]);
+        float denominator = (constants[key] + constants["file_io_from_disk"]) + 0.001;
         r = numerator / denominator;
     }
     else if(write_only) {
         string key = compression_scheme + "_compression_rate";
         float first_fraction = (1.0 + leniency);
-        float second_fraction = (constants["file_io_to_disk"] / constants[key]);
+        float second_fraction = (constants["file_io_to_disk"] / (constants[key] + 0.001));
         r = first_fraction - second_fraction;
     }
     return r;
@@ -59,6 +57,7 @@ vector<float> histogram(vector<kv> arr, int bins) {
         hist_data.push_back(hist[i]);
     }
 
+    free(hist);
     return hist_data;
 }
 

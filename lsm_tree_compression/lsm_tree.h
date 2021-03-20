@@ -10,6 +10,7 @@
 #include <tuple>
 #include <vector>
 #include <unordered_map>
+#include "constants.h"
 #include "bloom_filter.hpp"
 
 // Defines number of key values pairs in Main Memory
@@ -135,6 +136,7 @@ typedef struct LSM_Tree {
   vector<level> levels;
   vector<kv> buffer;
   unordered_map<string, float> constants;
+  unordered_map<string, dataset> models;
 
   void write(int key, int value);
   pair<read_result, int> read(int key);
