@@ -213,6 +213,7 @@ vector<float> histogram(vector<kv> arr, int bins) {
         hist_data.push_back(hist[i]);
     }
 
+    free(hist);
     return hist_data;
 }
 
