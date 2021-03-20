@@ -12,7 +12,7 @@
 
 using namespace std;
 
-#define BINS 60
+#define BINS 50
 
 typedef struct kv {
   int key;
