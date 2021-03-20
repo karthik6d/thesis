@@ -1,0 +1,3 @@
+[submodule "lsm_tree_compression/lsm_tree_compression/RandomForests"]
+	path = lsm_tree_compression/lsm_tree_compression/RandomForests
+	url = https://github.com/handspeaker/RandomForests.git

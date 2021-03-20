@@ -16,6 +16,8 @@
 #include "zlib.h"
 #include "lsm_tree.h"
 #include "zstd.h"
+#include "RandomForests/RandomForest.h"
+#include "constants.h"
 
 using namespace std;
 
@@ -288,3 +290,68 @@ unordered_map<string, float> write_constants_to_file() {
     return full_dic;
 }
 
+void readDataCsv(float** trainset, float* trainlabels, string path) {
+    // Create an input filestream
+    std::ifstream myFile(path);
+
+    // Make sure the file is open
+    if(!myFile.is_open()) throw std::runtime_error("Could not open file");
+
+	vector<float> features;
+	vector<float> labels;
+
+	string line, word, temp;
+	int row = 0;
+
+	while(getline(myFile, line)) { 
+        features.clear(); 
+  
+        // read an entire row and 
+        // store it in a string variable 'line'   
+        // used for breaking words 
+        stringstream s(line); 
+
+        // read every column data of a row and 
+        // store it in a string variable, 'word' 
+        while (getline(s, word, ',')) { 
+            // add all the column data 
+            // of a row to a vector 
+			float data = stof(word);
+            features.push_back(data); 
+        } 
+
+		labels.push_back(features.back());
+		features.pop_back();
+
+		for(int i = 0; i < features.size(); i++) {
+			trainset[row][i] = features.at(i);
+		}
+		row++;
+    } 
+
+	for(int i = 0; i < labels.size(); i++) {
+		trainlabels[i] = labels.at(i);
+	}
+
+}
+
+dataset get_training_data(string path, int TRAIN_NUM, int FEATURE) {
+    float** trainset;
+	float* trainlabels;
+
+	trainset=new float*[TRAIN_NUM];
+	trainlabels=new float[TRAIN_NUM];
+
+	for(int i=0;i<TRAIN_NUM;++i)
+	{
+		trainset[i]=new float[FEATURE];
+	}
+
+    readDataCsv(trainset, trainlabels, path);
+
+    RandomForest* randomForest = new RandomForest(100,10,10,0);
+    randomForest->train(trainset,trainlabels,TRAIN_NUM,FEATURE,1,true,1);
+
+    dataset new_dataset = {trainset, trainlabels, randomForest};
+    return new_dataset;
+}
