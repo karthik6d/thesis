@@ -37,7 +37,7 @@ float optimal_r(unordered_map<string, float> constants, bool read_only, bool wri
 }
 
 vector<float> histogram(vector<kv> arr, int bins) {
-    float* hist = (float*) malloc(bins * sizeof(int));
+    vector<float> hist(bins);
     int diff = arr.at(arr.size() - 1).value - arr.at(0).key;
     int interval = diff / bins;
 
@@ -57,7 +57,6 @@ vector<float> histogram(vector<kv> arr, int bins) {
         hist_data.push_back(hist[i]);
     }
 
-    free(hist);
     return hist_data;
 }
 
