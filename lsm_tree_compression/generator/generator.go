@@ -80,7 +80,7 @@ func normalKey(i int) int32 {
 }
 
 func uniformValue(key int32) int32 {
-	return int32(rand.Uint32())
+	return rand.Int31()
 }
 
 func sameValue(key int32) int32 {

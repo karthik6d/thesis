@@ -103,5 +103,5 @@ def datasetCreation():
     return None
         
 if __name__ == "__main__":
-    #generateDataFiles()
-    datasetCreation()
+    generateDataFiles()
+    #datasetCreation()

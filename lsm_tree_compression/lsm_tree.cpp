@@ -65,11 +65,30 @@ subcomponent::subcomponent(vector<kv> kvs) {
   this->filter = filter;
 
   this->num_values = kvs.size();
+  int min_val = INT32_MAX;
+  int max_val = INT32_MIN;
 
   // Will need to do some data sketching here before any compression scheme is sent
   for (auto pair : kvs) {
     int val = pair.key < 0 ? -pair.key : pair.key;
     this->filter.insert(pair.key);
+
+    int key = pair.key;
+    int value = pair.value;
+
+    if(key < min_val) {
+      min_val = key;
+    }
+    if(value < min_val) {
+      min_val = value;
+    }
+    if(key > max_val) {
+      max_val = key;
+    }
+    if(value > max_val) {
+      max_val = value;
+    }
+
 
     if (val < min_value) {
       this->min_value = val;
@@ -79,47 +98,8 @@ subcomponent::subcomponent(vector<kv> kvs) {
       this->max_value = val;
     }
   }
-
-  cout << "Has to be here" << endl;
-  // Print out what the R's should be to hold this leniency model
-  vector<string> compression_schemes;
-  compression_schemes.push_back("snappy");
-  compression_schemes.push_back("simd");
-  compression_schemes.push_back("rle");
-  compression_schemes.push_back("zlib");
-  compression_schemes.push_back("zstandard");
-
-  unordered_map<string, float> optimal_rs;
-
-  for(int i = 0; i < compression_schemes.size(); i++) {
-    optimal_rs[compression_schemes.at(i)] = optimal_r(current_db -> constants, current_db->read_only, current_db->write_only, current_db->leniency, compression_schemes.at(i));
-  }
-
-  cout << "womp womp" << endl;
-
-  vector<float> hist = histogram(kvs, 50);
-
-  cout << "is something wrong with creating the histogram";
-  // Do the prediction here
-  int best_compression = 0;
-  float best_compression_ratio = 1.0;
-
-  // cout << "Does something break" << endl;
-  // for(int i = 0; i < compression_schemes.size(); i++) {
-  //   float predicted_r;
-  //   cout << "Here" << endl;
-  //   current_db->models[compression_schemes.at(i)].rf->predict(hist.data(), predicted_r);
-  //   cout << "Prediction breaks" << endl;
-  //   float max_optimal_r = optimal_rs[compression_schemes.at(i)];
-  //   float diff = abs(predicted_r - max_optimal_r);
-  //   cout << compression_schemes.at(i) << ": Predicted R: " << predicted_r << " Max_Optimal_R: " << max_optimal_r << endl;
-  //   if(diff < 0.05 && predicted_r < best_compression_ratio) {
-  //     best_compression = i+1;
-  //     best_compression_ratio = predicted_r;
-  //   }
-  // }
-  cout << "Best Compression: " << best_compression << endl;
-  cout << "Optimal Compression Ratio: " << best_compression_ratio << endl;
+  
+  int best_compression = best_scheme(kvs, min_val, max_val);
   this->compressed = best_compression;
   // Have to add the compressed as well
   if(this->compressed == 1){

@@ -58,9 +58,9 @@ void load(string path) {
   //   cout << strerror(errno) << endl;
   // }
 
-  int i = 0;
+  //int i = 0;
 
-  int lines = count(data_str.begin(), data_str.end(), '\n');
+  //int lines = count(data_str.begin(), data_str.end(), '\n');
 
   cout << "reading csv" << endl;
 
