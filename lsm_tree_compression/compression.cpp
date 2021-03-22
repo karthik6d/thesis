@@ -36,28 +36,75 @@ float optimal_r(unordered_map<string, float> constants, bool read_only, bool wri
     return r;
 }
 
-vector<float> histogram(vector<kv> arr, int bins) {
-    vector<float> hist(bins);
-    int diff = arr.at(arr.size() - 1).value - arr.at(0).key;
+float* histogram(vector<kv> arr, int bins, int min_val, int max_val) {
+    float* hist = (float*) malloc(sizeof(float) * bins);
+    long long int diff = max_val - min_val;
     int interval = diff / bins;
 
+    cout << "Min Val: " << min_val << " Max Val: " << max_val << endl;
+    cout << "Diff: " << diff << endl;
+    cout << "interval: " << interval << endl;
+
+
     for(int i = 0; i < arr.size(); i++) {
-        int diff1 = arr.at(i).key - arr.at(0).key;
+        int diff1 = arr.at(i).key - min_val;
         int index_key = min(diff1 / interval, bins - 1);
         hist[index_key] += 1.0;
 
-        int diff2 = arr.at(i).value - arr.at(0).key;
+        int diff2 = arr.at(i).value - min_val;
         int index_value = min(diff2 / interval, bins - 1);
         hist[index_value] += 1.0;
     }
 
-    vector<float> hist_data;
     for(int i = 0; i < bins; i++) {
-        hist[i] = hist[i] / (float)(arr.size() * 2);
-        hist_data.push_back(hist[i]);
+        hist[i] = hist[i] / (arr.size() * 2);
     }
 
-    return hist_data;
+    return hist;
+}
+
+int best_scheme(vector<kv> kvs, int min_val, int max_val) {
+    cout << "Has to be here" << endl;
+    // Print out what the R's should be to hold this leniency model
+    vector<string> compression_schemes;
+    compression_schemes.push_back("snappy");
+    compression_schemes.push_back("simd");
+    compression_schemes.push_back("rle");
+    compression_schemes.push_back("zlib");
+    compression_schemes.push_back("zstandard");
+
+    unordered_map<string, float> optimal_rs;
+
+    for(int i = 0; i < compression_schemes.size(); i++) {
+        optimal_rs[compression_schemes.at(i)] = optimal_r(current_db -> constants, current_db->read_only, current_db->write_only, current_db->leniency, compression_schemes.at(i));
+    }
+
+    cout << "womp womp" << endl;
+    // std::sort(kvs.begin(), kvs.end(), compare_kvs);
+    float* hist = histogram(kvs, 50, min_val, max_val);
+
+    cout << "is something wrong with creating the histogram";
+    // Do the prediction here
+    int best_compression = 0;
+    float best_compression_ratio = 1.0;
+
+    for(int i = 0; i < compression_schemes.size(); i++) {
+      float predicted_r;
+      cout << "Here" << endl;
+      current_db->models[compression_schemes.at(i)].rf->predict(hist, predicted_r);
+      cout << "Prediction breaks" << endl;
+      float max_optimal_r = optimal_rs[compression_schemes.at(i)];
+      float diff = abs(predicted_r - max_optimal_r);
+      cout << compression_schemes.at(i) << ": Predicted R: " << predicted_r << " Max_Optimal_R: " << max_optimal_r << endl;
+      if(diff < 0.05 && predicted_r < best_compression_ratio) {
+        best_compression = i+1;
+        best_compression_ratio = predicted_r;
+      }
+    }
+    cout << "Best Compression: " << best_compression << endl;
+    cout << "Optimal Compression Ratio: " << best_compression_ratio << endl;
+
+    return best_compression;
 }
 
 string ZSTANDARD_encode(vector<kv> kvs) {
