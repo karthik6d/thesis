@@ -12,7 +12,7 @@
 
 using namespace std;
 
-#define BINS 60
+#define BINS 50
 
 typedef struct kv {
   int key;
@@ -188,28 +188,27 @@ int getBufferSize(string path) {
     return stoi(tokens3.at(0));
 }
 
-vector<float> histogram(vector<kv> arr, int bins) {
-    float* hist = (float*) malloc(bins * sizeof(int));
-    int diff = arr.at(arr.size() - 1).value - arr.at(0).key;
+float* histogram(vector<kv> arr, int bins, int min_val, int max_val) {
+    float* hist = (float*) malloc(sizeof(float) * bins);
+    long long int diff = max_val - min_val;
     int interval = diff / bins;
 
+
     for(int i = 0; i < arr.size(); i++) {
-        int diff1 = arr.at(i).key - arr.at(0).key;
+        int diff1 = arr.at(i).key - min_val;
         int index_key = min(diff1 / interval, bins - 1);
         hist[index_key] += 1.0;
 
-        int diff2 = arr.at(i).value - arr.at(0).key;
+        int diff2 = arr.at(i).value - min_val;
         int index_value = min(diff2 / interval, bins - 1);
         hist[index_value] += 1.0;
     }
 
-    vector<float> hist_data;
     for(int i = 0; i < bins; i++) {
-        hist[i] = hist[i] / (float)(arr.size() * 2);
-        hist_data.push_back(hist[i]);
+        hist[i] = hist[i] / (arr.size() * 2);
     }
 
-    return hist_data;
+    return hist;
 }
 
 vector<kv> load(string path) {
@@ -260,19 +259,47 @@ vector<kv> load(string path) {
 
 int main(int argc, char** argv) {
     string path = argv[1];
+	int min_val = INT32_MAX;
+	int max_val = INT32_MIN;
+
+    int min_val = INT32_MAX;
+    int max_val = INT32_MIN;
 
     vector<kv> kvs = load(path);
+    for(int i = 0; i < kvs.size(); i++) {
+        kv pair = kvs[i];
+        int key = pair.key;
+        int value = pair.value;
+
+        if(key < min_val) {
+        min_val = key;
+        }
+        if(value < min_val) {
+        min_val = value;
+        }
+        if(key > max_val) {
+        max_val = key;
+        }
+        if(value > max_val) {
+        max_val = value;
+        }
+    }
+    
+<<<<<<< HEAD
+    
+=======
+>>>>>>> 52f6eeec2584bbe6572e03df1fc49e66c0381806
     int buffer_size = getBufferSize(path);
     unordered_map<string, float> compression_rates = getCompressionRates(kvs, buffer_size);
-    vector<float> hist = histogram(kvs, BINS);
+    float* hist = histogram(kvs, BINS, min_val, max_val);
 
     // Write the histogram to disk
     std::ofstream myfile;
     string out_path = "../clean_data/hist.csv";
     myfile.open(out_path);
 
-    for(float val : hist) {
-        myfile << val << ",";
+    for(int i = 0; i < BINS; i++) {
+        myfile << hist[i] << ",";
     }
 
     myfile.close();

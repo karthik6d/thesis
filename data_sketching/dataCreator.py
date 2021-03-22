@@ -19,9 +19,9 @@ def generateDataFiles():
     valueDistributions = {"uniformValue": 0, "sameValue": 1}
 
     buffer_sizes = [16384, 16384*4, 16384*8]
-    NUM_ENTRIES = 1
+    NUM_ENTRIES = 60
     path_prefix = "../data_sketching/raw_data/"
-    raw_count = 0
+    raw_count = 300
 
 
     for buffer_size in buffer_sizes:
@@ -103,5 +103,11 @@ def datasetCreation():
     return None
         
 if __name__ == "__main__":
-    generateDataFiles()
-    #datasetCreation()
+<<<<<<< HEAD
+    #generateDataFiles()
+    datasetCreation()
+=======
+   # generateDataFiles()
+   datasetCreation()
+   # generateDataFiles()
+>>>>>>> 52f6eeec2584bbe6572e03df1fc49e66c0381806

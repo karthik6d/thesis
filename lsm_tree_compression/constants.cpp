@@ -293,7 +293,7 @@ unordered_map<string, float> write_constants_to_file() {
 void readDataCsv(float** trainset, float* trainlabels, string path) {
     // Create an input filestream
     std::ifstream myFile(path);
-
+	cout << "Path: " << path << endl;
     // Make sure the file is open
     if(!myFile.is_open()) throw std::runtime_error("Could not open file");
 
