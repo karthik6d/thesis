@@ -104,8 +104,14 @@ def datasetCreation():
         
 if __name__ == "__main__":
 <<<<<<< HEAD
+<<<<<<< HEAD
     #generateDataFiles()
     datasetCreation()
+=======
+   # generateDataFiles()
+   datasetCreation()
+   # generateDataFiles()
+>>>>>>> 52f6eeec2584bbe6572e03df1fc49e66c0381806
 =======
    # generateDataFiles()
    datasetCreation()

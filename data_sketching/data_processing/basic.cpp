@@ -262,9 +262,6 @@ int main(int argc, char** argv) {
 	int min_val = INT32_MAX;
 	int max_val = INT32_MIN;
 
-    int min_val = INT32_MAX;
-    int max_val = INT32_MIN;
-
     vector<kv> kvs = load(path);
     for(int i = 0; i < kvs.size(); i++) {
         kv pair = kvs[i];
@@ -285,10 +282,6 @@ int main(int argc, char** argv) {
         }
     }
     
-<<<<<<< HEAD
-    
-=======
->>>>>>> 52f6eeec2584bbe6572e03df1fc49e66c0381806
     int buffer_size = getBufferSize(path);
     unordered_map<string, float> compression_rates = getCompressionRates(kvs, buffer_size);
     float* hist = histogram(kvs, BINS, min_val, max_val);
