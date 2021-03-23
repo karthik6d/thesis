@@ -25,13 +25,13 @@ using namespace std;
 
 vector<workload_entry> workload;
 
-void create(string db_name, int is_compressed, unordered_map<string, float> constants, unordered_map<string, dataset> models, bool read_only, bool write_only, float leniency) {
+void create(string db_name, int is_compressed, unordered_map<string, float> constants, unordered_map<string, dataset> models, int read_amount, int write_amount, float leniency) {
   LSM_Tree* db = new LSM_Tree();
   db->name = db_name;
   db->compressed = is_compressed;
   db->constants = constants;
-  db->read_only = read_only;
-  db->write_only = write_only;
+  db->read_amount = read_amount;
+  db->write_amount = write_amount;
   db->leniency = leniency;
   db->models = models;
   current_db = db;
@@ -99,8 +99,8 @@ int main(int argc, char** argv) {
   string output_str;
   int is_compressed = atoi(argv[1]);
   ifstream query_file(argv[2]);
-  bool read_only = atoi(argv[3]);
-  bool write_only = atoi(argv[4]);
+  int read_amount = atoi(argv[3]);
+  int write_amount = atoi(argv[4]);
   float leniency = stof(argv[5]);
 
   unordered_map<string, float> constants = write_constants_to_file();
@@ -140,7 +140,7 @@ int main(int argc, char** argv) {
     } while (ss);
 
     if (elements[0].compare("create") == 0) {
-      create(elements.at(1), is_compressed, constants, rf_models, read_only, write_only, leniency);
+      create(elements.at(1), is_compressed, constants, rf_models, read_amount, write_amount, leniency);
     } else if (elements[0].compare("load") == 0) {
       load(elements.at(1));
     } else if (elements[0].compare("read") == 0) {

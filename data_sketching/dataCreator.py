@@ -51,6 +51,7 @@ def datasetCreation():
         bash_command = "./basic {path}".format(path = curr_path)
         process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
         output, error = process.communicate()
+        print(output)
 
         if isfile("../clean_data/hist.csv") and isfile("../clean_data/compression_ratios.csv"):
             count += 1
@@ -94,7 +95,7 @@ def datasetCreation():
     
     #print(full_data)
     for scheme in full_data:
-        path = "../clean_data/" + scheme + ".csv"
+        path = "../clean_data/sample_" + scheme + ".csv"
         with open(path, "w", newline="") as f:
             writer = csv.writer(f)
             writer.writerows(full_data[scheme])
@@ -103,17 +104,6 @@ def datasetCreation():
     return None
         
 if __name__ == "__main__":
-<<<<<<< HEAD
-<<<<<<< HEAD
-    #generateDataFiles()
-    datasetCreation()
-=======
    # generateDataFiles()
    datasetCreation()
    # generateDataFiles()
->>>>>>> 52f6eeec2584bbe6572e03df1fc49e66c0381806
-=======
-   # generateDataFiles()
-   datasetCreation()
-   # generateDataFiles()
->>>>>>> 52f6eeec2584bbe6572e03df1fc49e66c0381806

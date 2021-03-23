@@ -145,10 +145,10 @@ unordered_map<string, float> getCompressionRates(vector<kv> kvs, int DEFAULT_BUF
 
     //cout << "SEG FAULT5" << endl;
     // Figure out the best one based on size
-    cout << "DEFAULT BUFFER SIZE: " << (DEFAULT_BUFFER_SIZE * sizeof(kv)) << endl;
-    cout << "Snappy: " << (float)snappy_size / (float) (DEFAULT_BUFFER_SIZE * sizeof(kv))<< endl;
-    cout << "Zlib: " << zlib_size << endl;
-    cout << "Zstandard: " << zstandard_size << endl;
+    // cout << "DEFAULT BUFFER SIZE: " << (DEFAULT_BUFFER_SIZE * sizeof(kv)) << endl;
+    // cout << "Snappy: " << (float)snappy_size / (float) (DEFAULT_BUFFER_SIZE * sizeof(kv))<< endl;
+    // cout << "Zlib: " << zlib_size << endl;
+    // cout << "Zstandard: " << zstandard_size << endl;
     unordered_map<string, float> compression_rates;
     compression_rates["snappy"] = (float) snappy_size / (float) (DEFAULT_BUFFER_SIZE * sizeof(kv));
     compression_rates["simd"] = (float) simd_size / (float) (DEFAULT_BUFFER_SIZE * sizeof(kv));
@@ -193,6 +193,9 @@ float* histogram(vector<kv> arr, int bins, int min_val, int max_val) {
     long long int diff = max_val - min_val;
     int interval = diff / bins;
 
+    for(int i = 0; i < bins; i++) {
+        hist[i] = 0.0;
+    }
 
     for(int i = 0; i < arr.size(); i++) {
         int diff1 = arr.at(i).key - min_val;
@@ -204,8 +207,16 @@ float* histogram(vector<kv> arr, int bins, int min_val, int max_val) {
         hist[index_value] += 1.0;
     }
 
+    // for(int i = 0; i < bins; i++) {
+    //     cout << hist[i] << ",";
+    // }
+    // cout << endl;
+
     for(int i = 0; i < bins; i++) {
         hist[i] = hist[i] / (arr.size() * 2);
+        if(hist[i] > 1) {
+            cout << "Here: " << hist[i] << endl;
+        }
     }
 
     return hist;
@@ -264,7 +275,7 @@ int main(int argc, char** argv) {
 
     vector<kv> kvs = load(path);
     for(int i = 0; i < kvs.size(); i++) {
-        kv pair = kvs[i];
+        kv pair = kvs.at(i);
         int key = pair.key;
         int value = pair.value;
 
@@ -284,6 +295,7 @@ int main(int argc, char** argv) {
     
     int buffer_size = getBufferSize(path);
     unordered_map<string, float> compression_rates = getCompressionRates(kvs, buffer_size);
+    cout << "Min Val: " << min_val << " Max Val: " << max_val << endl;
     float* hist = histogram(kvs, BINS, min_val, max_val);
 
     // Write the histogram to disk

@@ -22,6 +22,7 @@ using namespace std;
 
 LSM_Tree* current_db = nullptr;
 int component_count = 0;
+int N = 0;
 
 void LSM_Tree::write(int key, int value) {
   // if it fits into the top-level buffer, just add it there
@@ -29,6 +30,8 @@ void LSM_Tree::write(int key, int value) {
     this->buffer.push_back({key, value});
     return;
   }
+  // Add to gloval count of N
+  N += 1;
 
   // otherwise, we have to create a new component for it
   component c(this->buffer);

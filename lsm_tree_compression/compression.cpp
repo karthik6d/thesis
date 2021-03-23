@@ -8,6 +8,7 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <math.h>
 #include "snappy.h"
 #include "SIMDCompressionAndIntersection/include/codecfactory.h"
 #include "SIMDCompressionAndIntersection/include/intersection.h"
@@ -19,20 +20,42 @@ using namespace std;
 
 int compressed_file_count = 0;
 
-float optimal_r(unordered_map<string, float> constants, bool read_only, bool write_only, float leniency, string compression_scheme) {
+// float optimal_r(unordered_map<string, float> constants, int read_only, int write_only, float leniency, string compression_scheme) {
+//     float r = 1.0;
+//     if(read_only) {
+//         string key = compression_scheme + "_decompression_rate";
+//         float numerator = (1.0 + leniency) * constants[key];
+//         float denominator = (constants[key] + constants["file_io_from_disk"]) + 0.001;
+//         r = numerator / denominator;
+//     }
+//     else if(write_only) {
+//         string key = compression_scheme + "_compression_rate";
+//         float first_fraction = (1.0 + leniency);
+//         float second_fraction = (constants["file_io_to_disk"] / (constants[key] + 0.001));
+//         r = first_fraction - second_fraction;
+//     }
+//     return r;
+// }
+
+float optimal_r(unordered_map<string, float> constants, int read_amount, int write_amount, float leniency, string compression_scheme) {
     float r = 1.0;
-    if(read_only) {
-        string key = compression_scheme + "_decompression_rate";
-        float numerator = (1.0 + leniency) * constants[key];
-        float denominator = (constants[key] + constants["file_io_from_disk"]) + 0.001;
-        r = numerator / denominator;
-    }
-    else if(write_only) {
-        string key = compression_scheme + "_compression_rate";
-        float first_fraction = (1.0 + leniency);
-        float second_fraction = (constants["file_io_to_disk"] / (constants[key] + 0.001));
-        r = first_fraction - second_fraction;
-    }
+    string key_decompression = compression_scheme + "_decompression_rate";
+    string key_compression = compression_scheme + "_compression_rate";
+    
+    // Define all constants
+    float A = read_amount * (0.01) * ((N*1.0)/DEFAULT_BUFFER_SIZE);
+    float log_value = log(((N*1.0)/DEFAULT_BUFFER_SIZE)) / log(COMPONENTS_PER_LEVEL*1.0);
+    float first_num_fraction = (leniency * A * read_amount) / constants["file_io_from_disk"];
+    float second_num_fraction = (leniency * write_amount * log_value) / (constants["file_io_to_disk"] * N);
+    float third_num_fraction = (write_amount * log_value) / (constants[key_compression] * N);
+    float first_den_fraction = (A * read_amount) / constants["file_io_from_disk"];
+    float second_den_fraction = (A * read_amount) / constants[key_decompression];
+    float third_den_fraction = (write_amount * log_value) / (constants["file_io_to_disk"] * N);
+
+    float numerator = first_num_fraction + second_num_fraction + third_num_fraction;
+    float denominator = first_den_fraction + second_den_fraction + third_den_fraction;
+
+    r = numerator / denominator;
     return r;
 }
 
@@ -76,7 +99,9 @@ int best_scheme(vector<kv> kvs, int min_val, int max_val) {
     unordered_map<string, float> optimal_rs;
 
     for(int i = 0; i < compression_schemes.size(); i++) {
-        optimal_rs[compression_schemes.at(i)] = optimal_r(current_db -> constants, current_db->read_only, current_db->write_only, current_db->leniency, compression_schemes.at(i));
+        //float r = optimal_r(current_db -> constants, current_db->read_amount, current_db->write_amount, current_db->leniency, compression_schemes.at(i));
+        
+        optimal_rs[compression_schemes.at(i)] = optimal_r(current_db -> constants, current_db->read_amount, current_db->write_amount, current_db->leniency, compression_schemes.at(i));
     }
 
     cout << "womp womp" << endl;

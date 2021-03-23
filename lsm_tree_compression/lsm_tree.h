@@ -130,8 +130,8 @@ typedef struct level {
 typedef struct LSM_Tree {
   string name;
   int compressed;
-  bool read_only;
-  bool write_only;
+  int read_amount;
+  int write_amount;
   float leniency;
   vector<level> levels;
   vector<kv> buffer;
@@ -147,5 +147,6 @@ typedef struct LSM_Tree {
 
 extern LSM_Tree* current_db;
 extern int component_count;
+extern int N;
 
 #endif
