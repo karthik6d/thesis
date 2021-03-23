@@ -193,6 +193,10 @@ float* histogram(vector<kv> arr, int bins, int min_val, int max_val) {
     long long int diff = max_val - min_val;
     int interval = diff / bins;
 
+    for(int i = 0; i < bins; i++) {
+    	hist[i] = 0.0;
+    }
+
     for(int i = 0; i < arr.size(); i++) {
         int diff1 = arr.at(i).key - min_val;
         int index_key = min(diff1 / interval, bins - 1);
