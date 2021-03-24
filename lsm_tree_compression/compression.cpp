@@ -15,6 +15,7 @@
 #include "zlib.h"
 #include "lsm_tree.h"
 #include "zstd.h"
+#include "basic.h"
 
 using namespace std;
 
@@ -64,10 +65,9 @@ float* histogram(vector<kv> arr, int bins, int min_val, int max_val) {
     long long int diff = max_val - min_val;
     int interval = diff / bins;
 
-    cout << "Min Val: " << min_val << " Max Val: " << max_val << endl;
-    cout << "Diff: " << diff << endl;
-    cout << "interval: " << interval << endl;
-
+    for(int i = 0; i < bins; i++) {
+        hist[i] = 0.0;
+    }
 
     for(int i = 0; i < arr.size(); i++) {
         int diff1 = arr.at(i).key - min_val;
@@ -87,7 +87,7 @@ float* histogram(vector<kv> arr, int bins, int min_val, int max_val) {
 }
 
 int best_scheme(vector<kv> kvs, int min_val, int max_val) {
-    cout << "Has to be here" << endl;
+    //cout << "Has to be here" << endl;
     // Print out what the R's should be to hold this leniency model
     vector<string> compression_schemes;
     compression_schemes.push_back("snappy");
@@ -97,37 +97,54 @@ int best_scheme(vector<kv> kvs, int min_val, int max_val) {
     compression_schemes.push_back("zstandard");
 
     unordered_map<string, float> optimal_rs;
+    unordered_map<string, float> predicted_rs;
+
+    // for(auto it : current_db->constants) {
+    //     cout << it.first << ":" << it.second << endl;
+    // }
 
     for(int i = 0; i < compression_schemes.size(); i++) {
-        //float r = optimal_r(current_db -> constants, current_db->read_amount, current_db->write_amount, current_db->leniency, compression_schemes.at(i));
-        
         optimal_rs[compression_schemes.at(i)] = optimal_r(current_db -> constants, current_db->read_amount, current_db->write_amount, current_db->leniency, compression_schemes.at(i));
     }
 
-    cout << "womp womp" << endl;
-    // std::sort(kvs.begin(), kvs.end(), compare_kvs);
-    float* hist = histogram(kvs, 50, min_val, max_val);
+    vector<kv> kvs_copy(kvs);
+    //cout << "Getting the best compression rates" << endl;
+    predicted_rs = getCompressionRates(kvs_copy);
+    //cout << "After that" << endl;
+    // // std::sort(kvs.begin(), kvs.end(), compare_kvs);
+    // float* hist = histogram(kvs, 50, min_val, max_val);
 
-    cout << "is something wrong with creating the histogram";
-    // Do the prediction here
+    // for(int i = 0; i < 50; i++) {
+    //     cout << hist[i] << ",";
+    // }
+    // cout << endl;
+    // cout << "is something wrong with creating the histogram";
+    // // Do the prediction here
     int best_compression = 0;
     float best_compression_ratio = 1.0;
 
     for(int i = 0; i < compression_schemes.size(); i++) {
-      float predicted_r;
-      cout << "Here" << endl;
-      current_db->models[compression_schemes.at(i)].rf->predict(hist, predicted_r);
-      cout << "Prediction breaks" << endl;
-      float max_optimal_r = optimal_rs[compression_schemes.at(i)];
-      float diff = abs(predicted_r - max_optimal_r);
-      cout << compression_schemes.at(i) << ": Predicted R: " << predicted_r << " Max_Optimal_R: " << max_optimal_r << endl;
-      if(diff < 0.05 && predicted_r < best_compression_ratio) {
-        best_compression = i+1;
-        best_compression_ratio = predicted_r;
-      }
+    //   float predicted_r;
+    //   current_db->models[compression_schemes.at(i)].rf->predict(hist, predicted_r);
+    //   float max_optimal_r = optimal_rs[compression_schemes.at(i)];
+    //   float diff = abs(predicted_r - max_optimal_r);
+    //   cout << compression_schemes.at(i) << ": Predicted R: " << predicted_r << " Max_Optimal_R: " << max_optimal_r << endl;
+        float predicted_r = predicted_rs[compression_schemes.at(i)];
+        float optimal_r = optimal_rs[compression_schemes.at(i)];
+        float diff = abs(predicted_r - optimal_r);
+
+        //cout << compression_schemes.at(i) << ": Predicted R: " << predicted_r << " Max_Optimal_R: " << optimal_r << endl;
+
+        if(predicted_r < optimal_r) {
+            if(predicted_r < best_compression_ratio) {
+                best_compression = i+1;
+                best_compression_ratio = predicted_r;
+            }
+        }
     }
-    cout << "Best Compression: " << best_compression << endl;
-    cout << "Optimal Compression Ratio: " << best_compression_ratio << endl;
+
+    // cout << "Best Compression: " << best_compression << endl;
+    // cout << "Optimal Compression Ratio: " << best_compression_ratio << endl;
 
     return best_compression;
 }

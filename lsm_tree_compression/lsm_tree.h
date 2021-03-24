@@ -136,7 +136,7 @@ typedef struct LSM_Tree {
   vector<level> levels;
   vector<kv> buffer;
   unordered_map<string, float> constants;
-  unordered_map<string, dataset> models;
+  // unordered_map<string, dataset> models;
 
   void write(int key, int value);
   pair<read_result, int> read(int key);

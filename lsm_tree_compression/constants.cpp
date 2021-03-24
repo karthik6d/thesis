@@ -349,7 +349,7 @@ dataset get_training_data(string path, int TRAIN_NUM, int FEATURE) {
 
     readDataCsv(trainset, trainlabels, path);
 
-    RandomForest* randomForest = new RandomForest(100,10,10,0);
+    RandomForest* randomForest = new RandomForest(15,20,20,0);
     randomForest->train(trainset,trainlabels,TRAIN_NUM,FEATURE,1,true,1);
 
     dataset new_dataset = {trainset, trainlabels, randomForest};

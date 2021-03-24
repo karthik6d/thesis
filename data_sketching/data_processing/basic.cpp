@@ -194,7 +194,7 @@ float* histogram(vector<kv> arr, int bins, int min_val, int max_val) {
     int interval = diff / bins;
 
     for(int i = 0; i < bins; i++) {
-        hist[i] = 0.0;
+    	hist[i] = 0.0;
     }
 
     for(int i = 0; i < arr.size(); i++) {

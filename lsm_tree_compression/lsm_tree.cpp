@@ -102,7 +102,9 @@ subcomponent::subcomponent(vector<kv> kvs) {
     }
   }
   
+  //cout << "Before" << endl;
   int best_compression = best_scheme(kvs, min_val, max_val);
+  //cout << "Compression in LSM: " << best_compression << endl;
   this->compressed = best_compression;
   // Have to add the compressed as well
   if(this->compressed == 1){
@@ -121,7 +123,7 @@ subcomponent::subcomponent(vector<kv> kvs) {
     this->filename = ZSTANDARD_encode(kvs);
   }
   else {
-    this->filename = string("data/C");
+    this->filename = string("enc/C");
     this->filename.append(to_string(component_count++));
     this->filename.append(".dat");
 
