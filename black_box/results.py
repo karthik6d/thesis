@@ -43,8 +43,8 @@ def createData(paramater_list):
 
 def parameters(readPercentage):
     paramater_list = []
-    N = 100000
-    queries = 10
+    N = 1000000
+    queries = 100000
     read = readPercentage
     # What do I Need:
     # N: 1,000,000
@@ -87,8 +87,8 @@ def main():
     for l in curr_parameters:
         createData(l)
         for leniency in leniencies:
-            num_read = readPercentage * 10 * 0.01
-            num_write = 10 - num_read
+            num_read = readPercentage * 100000 * 0.01
+            num_write = 100000 - num_read
 
             try:
                 load, read, size = runLSMTree(num_read, num_write, leniency)
