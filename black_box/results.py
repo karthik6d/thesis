@@ -71,7 +71,7 @@ def get_size(start_path = '.'):
     return total_size
 
 def main():
-    readPercentage = 100
+    readPercentage = 50
     curr_parameters = parameters(readPercentage)
     leniencies = [1, 1.3, 1.6, 1.9, 2.2, 2.5, 2.8, 3.1, 3.4, 3.7, 4.0]
 
